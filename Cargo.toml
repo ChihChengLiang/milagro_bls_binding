@@ -1,0 +1,15 @@
+[package]
+name = "string-sum"
+version = "0.1.0"
+edition = "2018"
+authors = ["Chih-Cheng Liang"]
+
+[lib]
+name = "milagro_bls_binding"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.7.0", features = ["extension-module"] }
+milagro_bls = { version = "0.9.0", git = "https://github.com/sigp/milagro_bls"}
+
+
