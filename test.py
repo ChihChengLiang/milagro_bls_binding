@@ -1,7 +1,8 @@
-from milagro_bls_binding import priv_to_public
+from milagro_bls_binding import privtopub
 
-pubkey = priv_to_public(b'\x56' * 48)
 
-assert isinstance(pubkey, bytes)
-assert len(pubkey) == 48
+def test_privtopub():
+    pubkey = privtopub(b'\x56' * 48)
+    assert isinstance(pubkey, bytes)
+    assert len(pubkey) == 48
 

@@ -6,7 +6,7 @@ use milagro_bls::PublicKey;
 use milagro_bls::SecretKey;
 
 #[pyfunction]
-fn priv_to_public(_py: Python, a: Py<PyBytes>) -> PyObject {
+fn privtopub(_py: Python, a: Py<PyBytes>) -> PyObject {
     let bytes = a.to_object(_py);
     let bytes = bytes.cast_as::<PyBytes>(_py).unwrap();
     let bytes = bytes.as_bytes();
@@ -19,7 +19,7 @@ fn priv_to_public(_py: Python, a: Py<PyBytes>) -> PyObject {
 /// This module is a python module implemented in Rust.
 #[pymodule]
 fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_wrapped(wrap_pyfunction!(priv_to_public))?;
+    m.add_wrapped(wrap_pyfunction!(privtopub))?;
 
     Ok(())
 }
