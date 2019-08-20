@@ -18,20 +18,19 @@ def assert_signature(obj):
     assert isinstance(obj, bytes) and len(obj) == 96
 
 
-@pytest.mark.xfail
 def test_sanity():
     msg_0 = b"\x32" * 32
     domain = 123
 
     # Test: Verify the basic sign/verify process
-    privkey_0 = 5566
+    privkey_0 = (5566).to_bytes(48, 'little')
     sig_0 = bls.sign(msg_0, privkey_0, domain)
     assert_signature(sig_0)
     pubkey_0 = bls.privtopub(privkey_0)
     assert_pubkey(pubkey_0)
     assert bls.verify(msg_0, pubkey_0, sig_0, domain)
 
-    privkey_1 = 5567
+    privkey_1 = (5567).to_bytes(48, 'little')
     sig_1 = bls.sign(msg_0, privkey_1, domain)
     pubkey_1 = bls.privtopub(privkey_1)
     assert bls.verify(msg_0, pubkey_1, sig_1, domain)
@@ -48,8 +47,8 @@ def test_sanity():
     assert bls.verify(msg_0, aggregated_pubkey, aggregated_signature, domain)
 
     # Test: `verify_multiple`
-    msg_1 = b"x22" * 32
-    privkey_2 = 55688
+    msg_1 = b"\x22" * 32
+    privkey_2 = (55688).to_bytes(48, 'little')
     sig_2 = bls.sign(msg_1, privkey_2, domain)
     assert_signature(sig_2)
     pubkey_2 = bls.privtopub(privkey_2)
@@ -84,9 +83,9 @@ def test_bls_core_succeed(privkey_int):
     assert_pubkey(pub)
     assert bls.verify(msg, pub, sig, domain=domain)
 
-@pytest.mark.xfail
+
 @pytest.mark.parametrize(
-    "msg, privkeys",
+    "msg, privkeys_int",
     [
         (
             b"\x12" * 32,
@@ -95,8 +94,9 @@ def test_bls_core_succeed(privkey_int):
         (b"\x34" * 32, [42, 666, 1274099945, 4389392949595]),
     ],
 )
-def test_signature_aggregation(msg, privkeys):
+def test_signature_aggregation(msg, privkeys_int):
     domain = 0
+    privkeys = [k.to_bytes(48, 'little') for k in privkeys_int]
     sigs = [bls.sign(msg, k, domain=domain) for k in privkeys]
     pubs = [bls.privtopub(k) for k in privkeys]
     aggsig = bls.aggregate_signatures(sigs)
@@ -104,10 +104,9 @@ def test_signature_aggregation(msg, privkeys):
     assert bls.verify(msg, aggpub, aggsig, domain=domain)
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize("msg_1, msg_2", [(b"\x12" * 32, b"\x34" * 32)])
 @pytest.mark.parametrize(
-    "privkeys_1, privkeys_2",
+    "privkeys_1_int, privkeys_2_int",
     [
         (tuple(range(1, 11)), tuple(range(1, 11))),
         ((1, 2, 3), (4, 5, 6, 7)),
@@ -116,8 +115,11 @@ def test_signature_aggregation(msg, privkeys):
         ((), (2, 3, 4, 5)),
     ],
 )
-def test_multi_aggregation(msg_1, msg_2, privkeys_1, privkeys_2):
+def test_multi_aggregation(msg_1, msg_2, privkeys_1_int, privkeys_2_int):
     domain = 0
+
+    privkeys_1 = [k.to_bytes(48, 'little') for k in privkeys_1_int]
+    privkeys_2 = [k.to_bytes(48, 'little') for k in privkeys_2_int]
 
     sigs_1 = [
         bls.sign(msg_1, k, domain=domain) for k in privkeys_1
