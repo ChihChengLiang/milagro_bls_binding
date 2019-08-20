@@ -63,7 +63,6 @@ def test_sanity():
     )
 
 
-# @pytest.mark.xfail
 @pytest.mark.parametrize(
     "privkey_int",
     [
@@ -83,51 +82,7 @@ def test_bls_core_succeed(privkey_int):
     sig = bls.sign(msg, privkey, domain=domain)
     pub = bls.privtopub(privkey)
     assert_pubkey(pub)
-    # assert bls.verify(msg, pub, sig, domain=domain)
-
-
-@pytest.mark.xfail
-@pytest.mark.parametrize("privkey", [(0), (CURVE_ORDER), (CURVE_ORDER + 1)])
-def test_invalid_private_key(privkey):
-    domain = 0
-    msg = str(privkey).encode("utf-8")
-    with pytest.raises(ValueError):
-        bls.privtopub(privkey)
-    with pytest.raises(ValueError):
-        bls.sign(msg, privkey, domain=domain)
-
-
-@pytest.mark.xfail
-def test_empty_aggregation():
-    assert bls.aggregate_pubkeys([]) == EMPTY_PUBKEY
-    assert bls.aggregate_signatures([]) == EMPTY_SIGNATURE
-
-
-@pytest.mark.xfail
-def test_verify_empty_signatures():
-    def verify():
-        return bls.verify(b"\x11" * 32, EMPTY_PUBKEY, EMPTY_SIGNATURE, 1000)
-
-    def verify_multiple_1():
-        return bls.verify_multiple(
-            pubkeys=(), message_hashes=(), signature=EMPTY_SIGNATURE, domain=1000
-        )
-
-    def verify_multiple_2():
-        return bls.verify_multiple(
-            pubkeys=(EMPTY_PUBKEY, EMPTY_PUBKEY),
-            message_hashes=(b"\x11" * 32, b"\x12" * 32),
-            signature=EMPTY_SIGNATURE,
-            domain=1000,
-        )
-
-    with pytest.raises(ValueError):
-        verify()
-    with pytest.raises(ValueError):
-        verify_multiple_1()
-    with pytest.raises(ValueError):
-        verify_multiple_2()
-
+    assert bls.verify(msg, pub, sig, domain=domain)
 
 @pytest.mark.xfail
 @pytest.mark.parametrize(
