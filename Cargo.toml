@@ -1,6 +1,6 @@
 [package]
-name = "milagro_bls_binding"
-version = "0.1.0"
+name = "milagro-bls-binding"
+version = "0.1.1"
 edition = "2018"
 authors = ["chihchengliang@gmail.com"]
 
