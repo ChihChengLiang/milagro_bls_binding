@@ -4,6 +4,19 @@ version = "0.1.1"
 edition = "2018"
 authors = ["chihchengliang@gmail.com"]
 
+[package.metadata.pyo3-pack]
+classifier = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.7",
+]
+maintainer = "Chih-Cheng Liang"
+maintainer-email = "chihchengliang@gmail.com"
+requires-python = ">=3.6"
+project-url = ["https://github.com/ChihChengLiang/milagro_bls_binding/"]
+
 [lib]
 name = "milagro_bls_binding"
 crate-type = ["cdylib"]
