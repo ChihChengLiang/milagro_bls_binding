@@ -63,12 +63,18 @@ def test_sanity():
 
 
 def test_invalid_signature():
+    domain = 123
     msg_0 = b"\x32" * 32
     privkey = (5567).to_bytes(48, "little")
     pubkey = bls.privtopub(privkey)
     invalid_sig = b"\x12" * 96
-    assert not bls.verify(msg_0, pubkey, invalid_sig, domain=123)
-
+    assert not bls.verify(msg_0, pubkey, invalid_sig, domain=domain)
+    assert not bls.verify_multiple(
+        pubkeys=[privkey, privkey],
+        message_hashes=[msg_0, msg_0],
+        signature=invalid_sig,
+        domain=domain,
+    )
 
 @pytest.mark.parametrize(
     "privkey_int",

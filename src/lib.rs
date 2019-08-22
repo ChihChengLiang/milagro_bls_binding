@@ -98,7 +98,10 @@ fn verify_multiple(
     }
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let agg_sig = AggregateSignature::from_bytes(sig_bytes).unwrap();
+    let agg_sig = match AggregateSignature::from_bytes(sig_bytes){
+        Ok(agg_sig) => agg_sig,
+        Err(_) => return false
+    };
     let pks: Vec<AggregatePublicKey> = pubkeys
         .iter()
         .map(|pubkey| {
