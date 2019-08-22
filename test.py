@@ -70,9 +70,24 @@ def test_invalid_signature():
     invalid_sig = b"\x12" * 96
     assert not bls.verify(msg_0, pubkey, invalid_sig, domain=domain)
     assert not bls.verify_multiple(
-        pubkeys=[privkey, privkey],
+        pubkeys=[pubkey, pubkey],
         message_hashes=[msg_0, msg_0],
         signature=invalid_sig,
+        domain=domain,
+    )
+
+def test_invalid_pubkey():
+    domain = 123
+    invalid_pubkey = b"\x56" * 48
+    msg = b"\x32" * 32
+    privkey = (5566).to_bytes(48, "little")
+    sig = bls.sign(msg, privkey, domain)
+
+    assert not bls.verify(msg, invalid_pubkey, sig, domain=domain)
+    assert not bls.verify_multiple(
+        pubkeys=[invalid_pubkey, invalid_pubkey],
+        message_hashes=[msg, msg],
+        signature=sig,
         domain=domain,
     )
 

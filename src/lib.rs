@@ -38,12 +38,15 @@ fn verify(
     let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let pubkey_obj = pubkey.to_object(_py);
     let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let pk = PublicKey::from_bytes(pubkey_bytes).unwrap();
+    let pk = match PublicKey::from_bytes(pubkey_bytes) {
+        Ok(pk) => pk,
+        Err(_) => return false,
+    };
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let sig = match Signature::from_bytes(sig_bytes) {
         Ok(sig) => sig,
-        Err(_) => return false
+        Err(_) => return false,
     };
     return sig.verify(msg_bytes, domain, &pk);
 }
@@ -98,18 +101,21 @@ fn verify_multiple(
     }
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let agg_sig = match AggregateSignature::from_bytes(sig_bytes){
+    let agg_sig = match AggregateSignature::from_bytes(sig_bytes) {
         Ok(agg_sig) => agg_sig,
-        Err(_) => return false
+        Err(_) => return false,
     };
-    let pks: Vec<AggregatePublicKey> = pubkeys
-        .iter()
-        .map(|pubkey| {
-            let pubkey_obj = pubkey.to_object(_py);
-            let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-            return AggregatePublicKey::from_bytes(pubkey_bytes).unwrap();
-        })
-        .collect();
+    let mut pks: Vec<AggregatePublicKey> = vec![];
+
+    for pk in pubkeys {
+        let pubkey_obj = pk.to_object(_py);
+        let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
+        let aggpk = match AggregatePublicKey::from_bytes(pubkey_bytes) {
+            Ok(agg_pk) => agg_pk,
+            Err(_) => return false,
+        };
+        pks.push(aggpk);
+    }
     let pks_ref: Vec<&AggregatePublicKey> = pks.iter().collect();
     return agg_sig.verify_multiple(&msg[..], domain, &pks_ref);
 }
