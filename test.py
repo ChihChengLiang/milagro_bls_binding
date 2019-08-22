@@ -23,14 +23,14 @@ def test_sanity():
     domain = 123
 
     # Test: Verify the basic sign/verify process
-    privkey_0 = (5566).to_bytes(48, 'little')
+    privkey_0 = (5566).to_bytes(48, "little")
     sig_0 = bls.sign(msg_0, privkey_0, domain)
     assert_signature(sig_0)
     pubkey_0 = bls.privtopub(privkey_0)
     assert_pubkey(pubkey_0)
     assert bls.verify(msg_0, pubkey_0, sig_0, domain)
 
-    privkey_1 = (5567).to_bytes(48, 'little')
+    privkey_1 = (5567).to_bytes(48, "little")
     sig_1 = bls.sign(msg_0, privkey_1, domain)
     pubkey_1 = bls.privtopub(privkey_1)
     assert bls.verify(msg_0, pubkey_1, sig_1, domain)
@@ -48,7 +48,7 @@ def test_sanity():
 
     # Test: `verify_multiple`
     msg_1 = b"\x22" * 32
-    privkey_2 = (55688).to_bytes(48, 'little')
+    privkey_2 = (55688).to_bytes(48, "little")
     sig_2 = bls.sign(msg_1, privkey_2, domain)
     assert_signature(sig_2)
     pubkey_2 = bls.privtopub(privkey_2)
@@ -60,6 +60,14 @@ def test_sanity():
         signature=sig_1_2,
         domain=domain,
     )
+
+
+def test_invalid_signature():
+    msg_0 = b"\x32" * 32
+    privkey = (5567).to_bytes(48, "little")
+    pubkey = bls.privtopub(privkey)
+    invalid_sig = b"\x12" * 96
+    assert not bls.verify(msg_0, pubkey, invalid_sig, domain=123)
 
 
 @pytest.mark.parametrize(
@@ -76,7 +84,7 @@ def test_sanity():
 )
 def test_bls_core_succeed(privkey_int):
     domain = 0
-    privkey = privkey_int.to_bytes(48, 'little')
+    privkey = privkey_int.to_bytes(48, "little")
     msg = str(privkey).encode("utf-8")
     sig = bls.sign(msg, privkey, domain=domain)
     pub = bls.privtopub(privkey)
@@ -96,7 +104,7 @@ def test_bls_core_succeed(privkey_int):
 )
 def test_signature_aggregation(msg, privkeys_int):
     domain = 0
-    privkeys = [k.to_bytes(48, 'little') for k in privkeys_int]
+    privkeys = [k.to_bytes(48, "little") for k in privkeys_int]
     sigs = [bls.sign(msg, k, domain=domain) for k in privkeys]
     pubs = [bls.privtopub(k) for k in privkeys]
     aggsig = bls.aggregate_signatures(sigs)
@@ -118,8 +126,8 @@ def test_signature_aggregation(msg, privkeys_int):
 def test_multi_aggregation(msg_1, msg_2, privkeys_1_int, privkeys_2_int):
     domain = 0
 
-    privkeys_1 = [k.to_bytes(48, 'little') for k in privkeys_1_int]
-    privkeys_2 = [k.to_bytes(48, 'little') for k in privkeys_2_int]
+    privkeys_1 = [k.to_bytes(48, "little") for k in privkeys_1_int]
+    privkeys_2 = [k.to_bytes(48, "little") for k in privkeys_2_int]
 
     sigs_1 = [
         bls.sign(msg_1, k, domain=domain) for k in privkeys_1

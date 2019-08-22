@@ -41,7 +41,10 @@ fn verify(
     let pk = PublicKey::from_bytes(pubkey_bytes).unwrap();
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sig = Signature::from_bytes(sig_bytes).unwrap();
+    let sig = match Signature::from_bytes(sig_bytes) {
+        Ok(sig) => sig,
+        Err(_) => return false
+    };
     return sig.verify(msg_bytes, domain, &pk);
 }
 
@@ -111,6 +114,7 @@ fn verify_multiple(
 /// This module is a python module implemented in Rust.
 #[pymodule]
 fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add_wrapped(wrap_pyfunction!(privtopub))?;
     m.add_wrapped(wrap_pyfunction!(sign))?;
     m.add_wrapped(wrap_pyfunction!(verify))?;
