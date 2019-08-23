@@ -58,5 +58,19 @@ def verify_aggsig(agg_sigs, pubkeys, domain, messages):
 
 def test_aggregation(benchmark, agg_sigs, pubkeys, domain, messages):
     args = (agg_sigs, pubkeys, domain, messages)
-    result = benchmark.pedantic(verify_aggsig, args=args, rounds=100, iterations=1)
+    result = benchmark.pedantic(verify_aggsig, args=args, rounds=100, iterations=10)
+    assert result == True
+
+
+def verify_single_sig(sig, pubkeys, domain, messages):
+    return bls.verify(
+        message_hashes=messages[0], pubkey=pubkeys[0], signature=sig, domain=domain
+    )
+
+
+def test_single_verify(benchmark, agg_sigs, pubkeys, privkeys, domain, messages):
+    sig = bls.sign(messages[0], privkeys[0], domain)
+    args = (sig, pubkeys, domain, messages)
+
+    result = benchmark.pedantic(verify_single_sig, args=args, rounds=100, iterations=10)
     assert result == True
