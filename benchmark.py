@@ -26,26 +26,26 @@ def messages():
     return [b"\x00" * 32, b"\x01" * 32]
 
 
-@pytest.fixture
-def signautes(domain, messages, privkeys):
-    if os.path.isfile(".key_cache"):
-        with open(".key_cache", "r") as f:
-            sigs = [bytes.fromhex(line) for line in f.readlines()]
-    else:
-        sigs = [
-            bls.sign(messages[i % 2], key, domain) for i, key in enumerate(privkeys)
-        ]
-        with open(".key_cache", "w") as f:
-            f.writelines([sig.hex() + "\n" for sig in sigs])
-    return sigs
+def verifying_one_message(agg_sig, pubkeys, domain, message):
+    agg_pub = bls.aggregate_pubkeys(pubkeys)
+    return bls.verify(message, agg_pub, agg_sig, domain)
 
 
-@pytest.fixture
-def agg_sigs(signautes):
-    return bls.aggregate_signatures(signautes)
+def test_verifying_aggregate_of_128_signatures(
+    benchmark, privkeys, pubkeys, messages, domain
+):
+    message = messages[0]
+    sigs = [bls.sign(message, key, domain) for key in privkeys]
+    agg_sig = bls.aggregate_signatures(sigs)
+
+    args = (agg_sig, pubkeys, domain, message)
+    result = benchmark.pedantic(
+        verifying_one_message, args=args, rounds=10, iterations=10
+    )
+    assert result == True
 
 
-def verify_aggsig(agg_sigs, pubkeys, domain, messages):
+def verifying_two_distinct_messages(agg_sig, pubkeys, domain, messages):
     len_msg = len(messages)
     agg_pub1 = bls.aggregate_pubkeys(
         [key for i, key in enumerate(pubkeys) if i % len_msg == 0]
@@ -53,12 +53,18 @@ def verify_aggsig(agg_sigs, pubkeys, domain, messages):
     app_pub2 = bls.aggregate_pubkeys(
         [key for i, key in enumerate(pubkeys) if i % len_msg == 1]
     )
-    return bls.verify_multiple([agg_pub1, app_pub2], messages, agg_sigs, domain)
+    return bls.verify_multiple([agg_pub1, app_pub2], messages, agg_sig, domain)
 
 
-def test_aggregation(benchmark, agg_sigs, pubkeys, domain, messages):
-    args = (agg_sigs, pubkeys, domain, messages)
-    result = benchmark.pedantic(verify_aggsig, args=args, rounds=100, iterations=10)
+def test_verifying_aggregation_of_128_signatures_with_two_distinct_messages(
+    benchmark, privkeys, pubkeys, domain, messages
+):
+    sigs = [bls.sign(messages[i % 2], key, domain) for i, key in enumerate(privkeys)]
+    agg_sig = bls.aggregate_signatures(sigs)
+    args = (agg_sig, pubkeys, domain, messages)
+    result = benchmark.pedantic(
+        verifying_two_distinct_messages, args=args, rounds=10, iterations=10
+    )
     assert result == True
 
 
@@ -68,7 +74,7 @@ def verify_single_sig(sig, pubkeys, domain, messages):
     )
 
 
-def test_single_verify(benchmark, agg_sigs, pubkeys, privkeys, domain, messages):
+def test_single_verify(benchmark, pubkeys, privkeys, domain, messages):
     sig = bls.sign(messages[0], privkeys[0], domain)
     args = (sig, pubkeys, domain, messages)
 
