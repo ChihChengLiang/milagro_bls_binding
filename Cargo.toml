@@ -23,6 +23,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.7.0", features = ["extension-module"] }
-milagro_bls = { version = "0.9.0", git = "https://github.com/sigp/milagro_bls"}
+milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag = "v0.9.0"}
 
 
