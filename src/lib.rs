@@ -1,3 +1,4 @@
+use pyo3::exceptions::{ValueError};
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyList};
 use pyo3::wrap_pyfunction;
@@ -15,15 +16,19 @@ fn PrivToPub(_py: Python, SK: Py<PyBytes>) -> PyObject {
 }
 
 #[pyfunction]
-fn Sign(_py: Python, SK: Py<PyBytes>, message: Py<PyBytes>) -> PyObject {
+fn Sign(_py: Python, SK: Py<PyBytes>, message: Py<PyBytes>) -> PyResult<PyObject> {
     let sk_obj = SK.to_object(_py);
     let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let msg_obj = message.to_object(_py);
     let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sk = SecretKey::from_bytes(sk_bytes).unwrap();
+    let sk: SecretKey;
+    match SecretKey::from_bytes(sk_bytes) {
+        Ok(_sk) => sk = _sk,
+        Err(_) => return Err(PyErr::new::<ValueError, &str>("Invalid Secrete Key")),
+    };
     let sig = Signature::new(msg_bytes, &sk);
     let obj = PyBytes::new(_py, sig.as_bytes().as_ref());
-    return obj.to_object(_py);
+    return Ok(obj.to_object(_py));
 }
 
 #[pyfunction]
@@ -48,14 +53,12 @@ fn Verify(_py: Python, PK: Py<PyBytes>, message: Py<PyBytes>, signature: Py<PyBy
 #[pyfunction]
 fn Aggregate(_py: Python, signatures: &PyList) -> PyObject {
     let mut agg_sig = AggregateSignature::new();
-    signatures
-        .iter()
-        .for_each(|sig| {
-            let sig_obj = sig.to_object(_py);
-            let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-            let sig = Signature::from_bytes(sig_bytes).unwrap();
-            agg_sig.add(&sig);
-        });
+    signatures.iter().for_each(|sig| {
+        let sig_obj = sig.to_object(_py);
+        let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
+        let sig = Signature::from_bytes(sig_bytes).unwrap();
+        agg_sig.add(&sig);
+    });
     let obj = PyBytes::new(_py, agg_sig.as_bytes().as_ref());
     return obj.to_object(_py);
 }
