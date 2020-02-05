@@ -1,4 +1,4 @@
-use pyo3::exceptions::{ValueError};
+use pyo3::exceptions::ValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyList};
 use pyo3::wrap_pyfunction;
@@ -21,9 +21,8 @@ fn Sign(_py: Python, SK: Py<PyBytes>, message: Py<PyBytes>) -> PyResult<PyObject
     let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let msg_obj = message.to_object(_py);
     let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sk: SecretKey;
-    match SecretKey::from_bytes(sk_bytes) {
-        Ok(_sk) => sk = _sk,
+    let sk = match SecretKey::from_bytes(sk_bytes) {
+        Ok(_sk) => _sk,
         Err(_) => return Err(PyErr::new::<ValueError, &str>("Invalid Secrete Key")),
     };
     let sig = Signature::new(msg_bytes, &sk);
@@ -38,13 +37,13 @@ fn Verify(_py: Python, PK: Py<PyBytes>, message: Py<PyBytes>, signature: Py<PyBy
     let pubkey_obj = PK.to_object(_py);
     let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let pk = match PublicKey::from_bytes(pubkey_bytes) {
-        Ok(pk) => pk,
+        Ok(_pk) => _pk,
         Err(_) => return false,
     };
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let sig = match Signature::from_bytes(sig_bytes) {
-        Ok(sig) => sig,
+        Ok(_sig) => _sig,
         Err(_) => return false,
     };
     return sig.verify(msg_bytes, &pk);
@@ -92,17 +91,21 @@ fn FastAggregateVerify(
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let agg_sig = match AggregateSignature::from_bytes(sig_bytes) {
-        Ok(agg_sig) => agg_sig,
+        Ok(_agg_sig) => _agg_sig,
         Err(_) => return false,
     };
     let mut pks: Vec<PublicKey> = vec![];
-    PKs.iter().for_each(|pk| {
+
+    for pk in PKs {
         let pubkey_obj = pk.to_object(_py);
         let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-        pks.push(PublicKey::from_bytes(pubkey_bytes).unwrap());
-    });
+        match PublicKey::from_bytes(pubkey_bytes) {
+            Ok(_pk) => pks.push(_pk),
+            Err(_) => return false,
+        };
+    }
 
-    let pks_ref: Vec<&PublicKey> = pks.iter().map(std::borrow::Borrow::borrow).collect();
+    let pks_ref: Vec<&PublicKey> = pks.iter().collect();
 
     let agg_pk = AggregatePublicKey::from_public_keys(&pks_ref);
     return agg_sig.verify(&msg_bytes, &agg_pk);
@@ -112,7 +115,10 @@ fn FastAggregateVerify(
 fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool {
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let agg_sig = AggregateSignature::from_bytes(sig_bytes).unwrap();
+    let agg_sig = match AggregateSignature::from_bytes(sig_bytes) {
+        Ok(_agg_sig) => _agg_sig,
+        Err(_) => return false,
+    };
 
     let mut apks: Vec<AggregatePublicKey> = vec![];
     let mut msgs: Vec<Vec<u8>> = vec![];
