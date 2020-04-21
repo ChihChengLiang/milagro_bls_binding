@@ -73,7 +73,7 @@ fn _AggregatePKs(_py: Python, pubkeys: &PyList) -> PyObject {
         })
         .collect();
     let pks_ref: Vec<&PublicKey> = pks.iter().collect();
-    let agg_pub = AggregatePublicKey::from_public_keys(&pks_ref);
+    let agg_pub = AggregatePublicKey::aggregate(&pks_ref);
     let obj = PyBytes::new(_py, agg_pub.as_bytes().as_ref());
     return obj.to_object(_py);
 }
@@ -120,23 +120,24 @@ fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool 
         Err(_) => return false,
     };
 
-    let mut apks: Vec<AggregatePublicKey> = vec![];
+    let mut pks: Vec<PublicKey> = vec![];
     let mut msgs: Vec<Vec<u8>> = vec![];
     pairs.iter().for_each(|pair| {
         let pubkey_obj = pair.get_item(0).unwrap().to_object(_py);
         let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-        let apk = AggregatePublicKey::from_bytes(pubkey_bytes).unwrap();
+        let pk = PublicKey::from_bytes(pubkey_bytes).unwrap();
 
         let msg_obj = pair.get_item(1).unwrap().to_object(_py);
         let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes().to_vec();
 
         msgs.push(msg_bytes);
-        apks.push(apk);
+        pks.push(pk);
     });
 
-    let apks_ref: Vec<&AggregatePublicKey> = apks.iter().map(std::borrow::Borrow::borrow).collect();
+    let msgs_refs: Vec<&[u8]> = msgs.iter().map(|x| x.as_slice()).collect();
+    let pks_ref: Vec<&PublicKey> = pks.iter().map(|x| x).collect();
 
-    return agg_sig.verify_multiple(&msgs, &apks_ref);
+    return agg_sig.aggregate_verify(&msgs_refs, &pks_ref);
 }
 
 /// This module is a python module implemented in Rust.
