@@ -107,8 +107,7 @@ fn FastAggregateVerify(
 
     let pks_ref: Vec<&PublicKey> = pks.iter().collect();
 
-    let agg_pk = AggregatePublicKey::from_public_keys(&pks_ref);
-    return agg_sig.verify(&msg_bytes, &agg_pk);
+    return agg_sig.fast_aggregate_verify(&msg_bytes, &pks_ref);
 }
 
 #[pyfunction]
