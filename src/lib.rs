@@ -6,13 +6,16 @@ use pyo3::wrap_pyfunction;
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
 #[pyfunction]
-fn PrivToPub(_py: Python, SK: Py<PyBytes>) -> PyObject {
-    let k_obj = SK.to_object(_py);
-    let k_bytes = k_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sk = SecretKey::from_bytes(k_bytes).unwrap();
+fn PrivToPub(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
+    let sk_obj = SK.to_object(_py);
+    let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
+    let sk = match SecretKey::from_bytes(sk_bytes) {
+        Ok(_sk) => _sk,
+        Err(_) => return Err(PyErr::new::<ValueError, &str>("Invalid Secrete Key")),
+    };
     let pk = PublicKey::from_secret_key(&sk);
     let obj = PyBytes::new(_py, pk.as_bytes().as_ref());
-    return obj.to_object(_py);
+    return Ok(obj.to_object(_py));
 }
 
 #[pyfunction]
