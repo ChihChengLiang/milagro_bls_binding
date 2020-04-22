@@ -4,7 +4,7 @@ version = "0.3.0"
 edition = "2018"
 authors = ["chihchengliang@gmail.com"]
 
-[package.metadata.pyo3-pack]
+[package.metadata.maturin]
 classifier = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
