@@ -27,8 +27,8 @@ def bytes_range(l):
     [
         (bytes_range(range(1, 10)), range(1, 10), True),
         (bytes_range([1,2,3]), [1,2,3], True),
-        # Test duplicate messages fail # Not supported yet
-        # (bytes_range([1,2,3]), (b'42', b'69', b'42'), False),
+        # Test duplicate messages fail
+        (bytes_range([1,2,3]), [42, 69, 42], False),
     ]
 )
 def test_aggregate_verify(SKs, messages, success):
