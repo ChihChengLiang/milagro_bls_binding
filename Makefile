@@ -1,5 +1,8 @@
 build:
-	pyo3-pack develop
+	maturin develop
+
+install:
+	pip install .
 
 test:
 	pytest test.py
