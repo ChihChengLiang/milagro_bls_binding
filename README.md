@@ -15,6 +15,16 @@ pip install milagro-bls-binding
 
 See `test.py` for example usage.
 
+## Build
+
+The releasing is unstable at this moment. In case a desired version for your platfrom can't be found via `pip install milagro_bls_binding`, try build it from the source.
+
+It requires `nightly` version of rust.
+
+```sh
+pip install .
+```
+
 ## Test
 
 ```sh
