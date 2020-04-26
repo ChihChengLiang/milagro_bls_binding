@@ -5,7 +5,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 0.1.x-pre-spec-v0.10.x ]
 
 jobs:
   build:
