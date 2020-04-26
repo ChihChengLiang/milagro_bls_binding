@@ -21,7 +21,7 @@ jobs:
         with:
           profile: minimal
           toolchain: nightly
-          override: true
+          default: true
           components: rustfmt, clippy
       - name: Lint with rustfmt
         uses: actions-rs/cargo@v1
@@ -50,7 +50,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
-        override: true
+        default: true
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
@@ -87,7 +87,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          override: true
+          default: true
 
       - name: Install dependencies
         run: |
