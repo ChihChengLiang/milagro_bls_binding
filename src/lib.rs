@@ -15,7 +15,7 @@ fn PrivToPub(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
     };
     let pk = PublicKey::from_secret_key(&sk);
     let obj = PyBytes::new(_py, pk.as_bytes().as_ref());
-    return Ok(obj.to_object(_py));
+    Ok(obj.to_object(_py))
 }
 
 #[pyfunction]
@@ -30,7 +30,7 @@ fn Sign(_py: Python, SK: Py<PyBytes>, message: Py<PyBytes>) -> PyResult<PyObject
     };
     let sig = Signature::new(msg_bytes, &sk);
     let obj = PyBytes::new(_py, sig.as_bytes().as_ref());
-    return Ok(obj.to_object(_py));
+    Ok(obj.to_object(_py))
 }
 
 #[pyfunction]
@@ -49,7 +49,7 @@ fn Verify(_py: Python, PK: Py<PyBytes>, message: Py<PyBytes>, signature: Py<PyBy
         Ok(_sig) => _sig,
         Err(_) => return false,
     };
-    return sig.verify(msg_bytes, &pk);
+    sig.verify(msg_bytes, &pk)
 }
 
 #[pyfunction]
@@ -62,7 +62,7 @@ fn Aggregate(_py: Python, signatures: &PyList) -> PyObject {
         agg_sig.add(&sig);
     });
     let obj = PyBytes::new(_py, agg_sig.as_bytes().as_ref());
-    return obj.to_object(_py);
+    obj.to_object(_py)
 }
 
 #[pyfunction]
@@ -78,7 +78,7 @@ fn _AggregatePKs(_py: Python, pubkeys: &PyList) -> PyObject {
     let pks_ref: Vec<&PublicKey> = pks.iter().collect();
     let agg_pub = AggregatePublicKey::aggregate(&pks_ref);
     let obj = PyBytes::new(_py, agg_pub.as_bytes().as_ref());
-    return obj.to_object(_py);
+    obj.to_object(_py)
 }
 
 #[pyfunction]
@@ -110,7 +110,7 @@ fn FastAggregateVerify(
 
     let pks_ref: Vec<&PublicKey> = pks.iter().collect();
 
-    return agg_sig.fast_aggregate_verify(&msg_bytes, &pks_ref);
+    agg_sig.fast_aggregate_verify(&msg_bytes, &pks_ref)
 }
 
 #[pyfunction]
@@ -139,7 +139,7 @@ fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool 
     let msgs_refs: Vec<&[u8]> = msgs.iter().map(|x| x.as_slice()).collect();
     let pks_ref: Vec<&PublicKey> = pks.iter().map(|x| x).collect();
 
-    return agg_sig.aggregate_verify(&msgs_refs, &pks_ref);
+    agg_sig.aggregate_verify(&msgs_refs, &pks_ref)
 }
 
 /// This module is a python module implemented in Rust.
