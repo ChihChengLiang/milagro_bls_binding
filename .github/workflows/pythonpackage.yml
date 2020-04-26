@@ -109,17 +109,17 @@ jobs:
       # https://stackoverflow.com/a/52481267/270334
       - name: Install wheels
         if:  matrix.os == 'windows-latest'
-        run: pip install --find-links=target\wheels milagro-bls-binding
+        run: pip install --find-links=target\wheels milagro_bls_binding
 
       - name: Install wheels
         if:  matrix.os != 'windows-latest'
-        run: pip install target/wheels/milagro-bls-binding*.whl
+        run: pip install target/wheels/milagro_bls_binding*.whl
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: target/wheels/milagro-bls-binding*.whl
+          files: target/wheels/milagro_bls_binding*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
