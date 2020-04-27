@@ -86,7 +86,16 @@ jobs:
           pip install -r requirements-dev.txt
           pip install .
       - name: Benchmarks
-        run: pytest benchmark.py
+        run: pytest benchmark.py --benchmark-json output.json
+      - name: Store benchmark result
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          tool: 'pytest'
+          output-file-path: output.json
+          comment-on-alert: true
+          github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          # Push and deploy GitHub pages branch automatically
+          auto-push: true
 
   python-publish:
     needs: build
