@@ -8,16 +8,12 @@ use pyo3::wrap_pyfunction;
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
 #[pyfunction]
-fn SkToPk(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
-    let sk_obj = SK.to_object(_py);
-    let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sk = match SecretKey::from_bytes(sk_bytes) {
-        Ok(_sk) => _sk,
-        Err(_) => return Err(PyErr::new::<ValueError, &str>("Invalid Secrete Key")),
-    };
-    let pk = PublicKey::from_secret_key(&sk);
-    let obj = PyBytes::new(_py, pk.as_bytes().as_ref());
-    Ok(obj.to_object(_py))
+fn SkToPk(_py: Python, SK: &PyBytes) -> PyResult<PyObject> {
+    let sk_bytes: Vec<u8> = SK.extract()?;
+    let sk = SecretKey::from_bytes(&sk_bytes)
+        .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad key: {:?}", e)))?;
+    let pk = PublicKey::from_secret_key(&sk).as_bytes();
+    Ok(PyBytes::new(_py, &pk).to_object(_py))
 }
 
 #[pyfunction]
