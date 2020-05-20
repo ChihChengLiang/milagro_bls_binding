@@ -6,7 +6,7 @@ use pyo3::wrap_pyfunction;
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
 #[pyfunction]
-fn PrivToPub(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
+fn SkToPk(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
     let sk_obj = SK.to_object(_py);
     let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let sk = match SecretKey::from_bytes(sk_bytes) {
@@ -114,7 +114,7 @@ fn FastAggregateVerify(
 }
 
 #[pyfunction]
-fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool {
+fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: Py<PyBytes>) -> bool {
     let sig_obj = signature.to_object(_py);
     let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let agg_sig = match AggregateSignature::from_bytes(sig_bytes) {
@@ -123,21 +123,24 @@ fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool 
     };
 
     let mut pks: Vec<PublicKey> = vec![];
-    let mut msgs: Vec<Vec<u8>> = vec![];
-    pairs.iter().for_each(|pair| {
-        let pubkey_obj = pair.get_item(0).unwrap().to_object(_py);
+    for pk in PKs {
+        let pubkey_obj = pk.to_object(_py);
         let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-        let pk = PublicKey::from_bytes(pubkey_bytes).unwrap();
+        match PublicKey::from_bytes(pubkey_bytes) {
+            Ok(_pk) => pks.push(_pk),
+            Err(_) => return false,
+        };
+    }
+    let pks_ref: Vec<&PublicKey> = pks.iter().collect();
 
-        let msg_obj = pair.get_item(1).unwrap().to_object(_py);
+    let mut msgs: Vec<Vec<u8>> = vec![];
+    for msg in messages {
+        let msg_obj = msg.to_object(_py);
         let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes().to_vec();
-
         msgs.push(msg_bytes);
-        pks.push(pk);
-    });
+    }
 
     let msgs_refs: Vec<&[u8]> = msgs.iter().map(|x| x.as_slice()).collect();
-    let pks_ref: Vec<&PublicKey> = pks.iter().map(|x| x).collect();
 
     agg_sig.aggregate_verify(&msgs_refs, &pks_ref)
 }
@@ -146,7 +149,7 @@ fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool 
 #[pymodule]
 fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
-    m.add_wrapped(wrap_pyfunction!(PrivToPub))?;
+    m.add_wrapped(wrap_pyfunction!(SkToPk))?;
     m.add_wrapped(wrap_pyfunction!(Sign))?;
     m.add_wrapped(wrap_pyfunction!(Verify))?;
     m.add_wrapped(wrap_pyfunction!(Aggregate))?;

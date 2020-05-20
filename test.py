@@ -27,18 +27,17 @@ def bytes_range(l):
     'SKs,messages,success',
     [
         (bytes_range(range(1, 10)), range(1, 10), True),
-        (bytes_range([1,2,3]), [1,2,3], True),
+        (bytes_range([1, 2, 3]), [1, 2, 3], True),
         # duplicate messages also work
-        (bytes_range([1,2,3]), [42, 69, 42], True),
+        (bytes_range([1, 2, 3]), [42, 69, 42], True),
     ]
 )
 def test_aggregate_verify(SKs, messages, success):
-    PKs = [bls.PrivToPub(SK) for SK in SKs]
+    PKs = [bls.SkToPk(SK) for SK in SKs]
     messages = [msg.to_bytes(32, "big") for msg in messages]
     signatures = [bls.Sign(SK, msg) for SK, msg in zip(SKs, messages)]
     aggregate_signature = bls.Aggregate(signatures)
-    assert bls.AggregateVerify(
-        list(zip(PKs, messages)), aggregate_signature) == success
+    assert bls.AggregateVerify(PKs, messages, aggregate_signature) == success
 
 
 @pytest.mark.parametrize(
@@ -58,7 +57,7 @@ def test_aggregate_verify(SKs, messages, success):
 def test_sign_verify(privkey_int):
     privkey = to_bytes(privkey_int)
     msg = str(privkey).encode('utf-8')
-    pub = bls.PrivToPub(privkey)
+    pub = bls.SkToPk(privkey)
     sig = bls.Sign(privkey, msg)
     assert bls.Verify(pub, msg, sig)
 
@@ -83,8 +82,13 @@ def test_aggregate_pks(signature_points, result_point):
     ]
 )
 def test_fast_aggregate_verify(SKs, message):
-    PKs = [bls.PrivToPub(sk) for sk in SKs]
+    PKs = [bls.SkToPk(sk) for sk in SKs]
     signatures = [bls.Sign(sk, message) for sk in SKs]
     aggregate_signature = bls.Aggregate(signatures)
-    assert bls.FastAggregateVerify(
-        PKs, message, aggregate_signature)
+    assert bls.FastAggregateVerify(PKs, message, aggregate_signature)
+
+
+def test_weird_cases():
+    bad_signature = b'\x00' * 96
+    assert not bls.AggregateVerify([], [], bad_signature)
+    assert bls.Aggregate([]) == b'\xc0' + b'\x00' * 95

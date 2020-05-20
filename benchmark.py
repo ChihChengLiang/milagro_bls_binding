@@ -13,7 +13,7 @@ def privkeys():
 
 @pytest.fixture
 def pubkeys(privkeys):
-    return [bls.PrivToPub(key) for key in privkeys]
+    return [bls.SkToPk(key) for key in privkeys]
 
 
 @pytest.fixture
@@ -48,7 +48,7 @@ def verifying_two_distinct_messages(agg_sig, pubkeys, messages):
     app_pub2 = bls._AggregatePKs(
         [key for i, key in enumerate(pubkeys) if i % len_msg == 1]
     )
-    return bls.AggregateVerify([[agg_pub1, messages[0]], [app_pub2, messages[1]]], agg_sig)
+    return bls.AggregateVerify([agg_pub1, app_pub2], messages, agg_sig)
 
 
 def test_verifying_aggregation_of_128_signatures_with_two_distinct_messages(
