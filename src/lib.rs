@@ -8,102 +8,101 @@ use pyo3::wrap_pyfunction;
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
 #[pyfunction]
-fn SkToPk(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
-    let sk_obj = SK.to_object(_py);
-    let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sk = match SecretKey::from_bytes(sk_bytes) {
-        Ok(_sk) => _sk,
-        Err(_) => return Err(PyErr::new::<ValueError, &str>("Invalid Secrete Key")),
-    };
-    let pk = PublicKey::from_secret_key(&sk);
-    let obj = PyBytes::new(_py, pk.as_bytes().as_ref());
-    Ok(obj.to_object(_py))
+fn SkToPk(_py: Python, SK: &PyBytes) -> PyResult<PyObject> {
+    let sk_bytes: Vec<u8> = SK.extract()?;
+    let sk = SecretKey::from_bytes(&sk_bytes)
+        .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad key: {:?}", e)))?;
+    let pk = PublicKey::from_secret_key(&sk).as_bytes();
+    Ok(PyBytes::new(_py, &pk).to_object(_py))
 }
 
 #[pyfunction]
-fn Sign(_py: Python, SK: Py<PyBytes>, message: Py<PyBytes>) -> PyResult<PyObject> {
-    let sk_obj = SK.to_object(_py);
-    let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let msg_obj = message.to_object(_py);
-    let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sk = match SecretKey::from_bytes(sk_bytes) {
-        Ok(_sk) => _sk,
-        Err(_) => return Err(PyErr::new::<ValueError, &str>("Invalid Secrete Key")),
-    };
-    let sig = Signature::new(msg_bytes, &sk);
-    let obj = PyBytes::new(_py, sig.as_bytes().as_ref());
-    Ok(obj.to_object(_py))
+fn Sign(_py: Python, SK: &PyBytes, message: &PyBytes) -> PyResult<PyObject> {
+    let sk_bytes: Vec<u8> = SK.extract()?;
+    let msg_bytes: Vec<u8> = message.extract()?;
+    let sk = SecretKey::from_bytes(&sk_bytes)
+        .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad key: {:?}", e)))?;
+    let sig = Signature::new(&msg_bytes, &sk).as_bytes();
+    Ok(PyBytes::new(_py, &sig).to_object(_py))
 }
 
 #[pyfunction]
-fn Verify(_py: Python, PK: Py<PyBytes>, message: Py<PyBytes>, signature: Py<PyBytes>) -> bool {
-    let msg_obj = message.to_object(_py);
-    let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let pubkey_obj = PK.to_object(_py);
-    let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let pk = match PublicKey::from_bytes(pubkey_bytes) {
+fn Verify(_py: Python, PK: &PyBytes, message: &PyBytes, signature: &PyBytes) -> bool {
+    let pubkey_bytes: Vec<u8> = match PK.extract() {
+        Ok(bytes) => bytes,
+        Err(_) => return false,
+    };
+    let msg_bytes: Vec<u8> = match message.extract() {
+        Ok(bytes) => bytes,
+        Err(_) => return false,
+    };
+    let sig_bytes: Vec<u8> = match signature.extract() {
+        Ok(bytes) => bytes,
+        Err(_) => return false,
+    };
+    let pk = match PublicKey::from_bytes(&pubkey_bytes) {
         Ok(_pk) => _pk,
         Err(_) => return false,
     };
-    let sig_obj = signature.to_object(_py);
-    let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let sig = match Signature::from_bytes(sig_bytes) {
+    let sig = match Signature::from_bytes(&sig_bytes) {
         Ok(_sig) => _sig,
         Err(_) => return false,
     };
-    sig.verify(msg_bytes, &pk)
+    sig.verify(&msg_bytes, &pk)
 }
 
 #[pyfunction]
-fn Aggregate(_py: Python, signatures: &PyList) -> PyObject {
+fn Aggregate(_py: Python, signatures: &PyList) -> PyResult<PyObject> {
     let mut agg_sig = AggregateSignature::new();
-    signatures.iter().for_each(|sig| {
-        let sig_obj = sig.to_object(_py);
-        let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-        let sig = Signature::from_bytes(sig_bytes).unwrap();
+    for sig in signatures {
+        let sig_bytes: Vec<u8> = sig.extract()?;
+        let sig = Signature::from_bytes(&sig_bytes)
+            .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad Signature: {:?}", e)))?;
         agg_sig.add(&sig);
-    });
-    let obj = PyBytes::new(_py, agg_sig.as_bytes().as_ref());
-    obj.to_object(_py)
+    }
+    Ok(PyBytes::new(_py, agg_sig.as_bytes().as_ref()).to_object(_py))
 }
 
 #[pyfunction]
-fn _AggregatePKs(_py: Python, pubkeys: &PyList) -> PyObject {
-    let pks: Vec<PublicKey> = pubkeys
-        .iter()
-        .map(|pubkey| {
-            let pubkey_obj = pubkey.to_object(_py);
-            let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-            return PublicKey::from_bytes(pubkey_bytes).unwrap();
-        })
-        .collect();
+fn _AggregatePKs(_py: Python, PKs: &PyList) -> PyResult<PyObject> {
+    let mut pks: Vec<PublicKey> = vec![];
+    for pubkey in PKs {
+        let pubkey_bytes = pubkey.extract()?;
+        let pk = PublicKey::from_bytes(pubkey_bytes)
+            .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad Public Key: {:?}", e)))?;
+        pks.push(pk);
+    }
     let pks_ref: Vec<&PublicKey> = pks.iter().collect();
-    let agg_pub = AggregatePublicKey::aggregate(&pks_ref);
-    let obj = PyBytes::new(_py, agg_pub.as_bytes().as_ref());
-    obj.to_object(_py)
+    let agg_pub = AggregatePublicKey::aggregate(&pks_ref).as_bytes();
+    Ok(PyBytes::new(_py, &agg_pub).to_object(_py))
 }
 
 #[pyfunction]
 fn FastAggregateVerify(
     _py: Python,
     PKs: &PyList,
-    message: Py<PyBytes>,
-    signature: Py<PyBytes>,
+    message: &PyBytes,
+    signature: &PyBytes,
 ) -> bool {
-    let msg_obj = message.to_object(_py);
-    let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-
-    let sig_obj = signature.to_object(_py);
-    let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let agg_sig = match AggregateSignature::from_bytes(sig_bytes) {
+    let msg_bytes: Vec<u8> = match message.extract() {
+        Ok(bytes) => bytes,
+        Err(_) => return false,
+    };
+    let sig_bytes: Vec<u8> = match signature.extract() {
+        Ok(bytes) => bytes,
+        Err(_) => return false,
+    };
+    let agg_sig = match AggregateSignature::from_bytes(&sig_bytes) {
         Ok(_agg_sig) => _agg_sig,
         Err(_) => return false,
     };
     let mut pks: Vec<PublicKey> = vec![];
 
     for pk in PKs {
-        let pubkey_obj = pk.to_object(_py);
-        let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
+        let pubkey_bytes = match pk.extract(){
+            Ok(bytes) => bytes,
+            Err(_) => return false,
+        };
         match PublicKey::from_bytes(pubkey_bytes) {
             Ok(_pk) => pks.push(_pk),
             Err(_) => return false,
@@ -116,18 +115,22 @@ fn FastAggregateVerify(
 }
 
 #[pyfunction]
-fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: Py<PyBytes>) -> bool {
-    let sig_obj = signature.to_object(_py);
-    let sig_bytes = sig_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
-    let agg_sig = match AggregateSignature::from_bytes(sig_bytes) {
+fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: &PyBytes) -> bool {
+    let sig_bytes: Vec<u8> = match signature.extract() {
+        Ok(bytes) => bytes,
+        Err(_) => return false,
+    };
+    let agg_sig = match AggregateSignature::from_bytes(&sig_bytes) {
         Ok(_agg_sig) => _agg_sig,
         Err(_) => return false,
     };
 
     let mut pks: Vec<PublicKey> = vec![];
     for pk in PKs {
-        let pubkey_obj = pk.to_object(_py);
-        let pubkey_bytes = pubkey_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
+        let pubkey_bytes = match pk.extract(){
+            Ok(bytes) => bytes,
+            Err(_) => return false,
+        };
         match PublicKey::from_bytes(pubkey_bytes) {
             Ok(_pk) => pks.push(_pk),
             Err(_) => return false,
@@ -137,9 +140,10 @@ fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: Py<P
 
     let mut msgs: Vec<Vec<u8>> = vec![];
     for msg in messages {
-        let msg_obj = msg.to_object(_py);
-        let msg_bytes = msg_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes().to_vec();
-        msgs.push(msg_bytes);
+        match msg.extract() {
+            Ok(msg_bytes) => msgs.push(msg_bytes),
+            Err(_) => return false,
+        };
     }
 
     let msgs_refs: Vec<&[u8]> = msgs.iter().map(|x| x.as_slice()).collect();
