@@ -7,6 +7,8 @@ This Python package is a performance-focused alternative to [ethereum/py_ecc](ht
 
 This library is unaudited. Please don't use it in production.
 
+For other technical details, see [FAQ](./FAQ.md)
+
 ## Get Started
 
 ```sh

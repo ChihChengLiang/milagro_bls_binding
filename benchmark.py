@@ -8,7 +8,7 @@ VALIDATORS = 128
 
 @pytest.fixture
 def privkeys():
-    return [(i + 1).to_bytes(48, 'big') for i in range(VALIDATORS)]
+    return [(i + 1).to_bytes(32, 'big') for i in range(VALIDATORS)]
 
 
 @pytest.fixture
