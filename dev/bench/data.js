@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1590005309205,
+  "lastUpdate": 1590005804997,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -721,6 +721,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0005208241562945034",
             "extra": "mean: 8.401395875000048 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f90778cc242c5476856bada6fad61635c908ab93",
+          "message": "Merge pull request #16 from ChihChengLiang/nit-fixes\n\nRemove all unwrap and make sure errors are properly handled",
+          "timestamp": "2020-05-21T04:09:52+08:00",
+          "tree_id": "c3381171ecbc76cb8b86c1e23224da649838c113",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/f90778cc242c5476856bada6fad61635c908ab93"
+        },
+        "date": 1590005804397,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 63.414813820620026,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004860944873189039",
+            "extra": "mean: 15.76918608999904 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 51.60009340607345,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0010484480226192433",
+            "extra": "mean: 19.379809880001062 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 134.51326882338128,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002971485393335194",
+            "extra": "mean: 7.43421083100003 msec\nrounds: 100"
           }
         ]
       }
