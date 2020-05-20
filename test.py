@@ -15,7 +15,8 @@ from py_ecc.bls.g2_primatives import (
 
 
 def to_bytes(i):
-    return i.to_bytes(48, "big")
+    # Secret key must be 32 bytes
+    return i.to_bytes(32, "big")
 
 
 def bytes_range(l):
@@ -27,8 +28,8 @@ def bytes_range(l):
     [
         (bytes_range(range(1, 10)), range(1, 10), True),
         (bytes_range([1,2,3]), [1,2,3], True),
-        # Test duplicate messages fail
-        (bytes_range([1,2,3]), [42, 69, 42], False),
+        # duplicate messages also work
+        (bytes_range([1,2,3]), [42, 69, 42], True),
     ]
 )
 def test_aggregate_verify(SKs, messages, success):
@@ -49,7 +50,9 @@ def test_aggregate_verify(SKs, messages, success):
         (735),
         (127409812145),
         (90768492698215092512159),
-        # (0),
+        # secret key is allowed to be 0 now
+        # https://tools.ietf.org/html/draft-irtf-cfrg-bls-signature-02#section-2.4
+        (0),
     ]
 )
 def test_sign_verify(privkey_int):
