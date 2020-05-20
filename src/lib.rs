@@ -6,7 +6,7 @@ use pyo3::wrap_pyfunction;
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
 #[pyfunction]
-fn PrivToPub(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
+fn SkToPk(_py: Python, SK: Py<PyBytes>) -> PyResult<PyObject> {
     let sk_obj = SK.to_object(_py);
     let sk_bytes = sk_obj.cast_as::<PyBytes>(_py).unwrap().as_bytes();
     let sk = match SecretKey::from_bytes(sk_bytes) {
@@ -146,7 +146,7 @@ fn AggregateVerify(_py: Python, pairs: &PyList, signature: Py<PyBytes>) -> bool 
 #[pymodule]
 fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
-    m.add_wrapped(wrap_pyfunction!(PrivToPub))?;
+    m.add_wrapped(wrap_pyfunction!(SkToPk))?;
     m.add_wrapped(wrap_pyfunction!(Sign))?;
     m.add_wrapped(wrap_pyfunction!(Verify))?;
     m.add_wrapped(wrap_pyfunction!(Aggregate))?;
