@@ -22,5 +22,5 @@ name = "milagro_bls_binding"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.9.2", features = ["extension-module"] }
+pyo3 = { version = "0.10.1", features = ["extension-module"] }
 milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag= "v1.1.0" }
