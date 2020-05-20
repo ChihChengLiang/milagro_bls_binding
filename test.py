@@ -86,3 +86,9 @@ def test_fast_aggregate_verify(SKs, message):
     signatures = [bls.Sign(sk, message) for sk in SKs]
     aggregate_signature = bls.Aggregate(signatures)
     assert bls.FastAggregateVerify(PKs, message, aggregate_signature)
+
+
+def test_weird_cases():
+    bad_signature = b'\x00' * 96
+    assert not bls.AggregateVerify([], [], bad_signature)
+    assert bls.Aggregate([]) == b'\xc0' + b'\x00' * 95
