@@ -4,3 +4,4 @@ __pycache__/
 target/
 *.lock
 .key_cache
+*.so
