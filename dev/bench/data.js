@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1590005804997,
+  "lastUpdate": 1598354819011,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -766,6 +766,75 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0002971485393335194",
             "extra": "mean: 7.43421083100003 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "36d56e0b2369d06c06499675b6d2ec5629fd45d6",
+          "message": "Expose pairing function",
+          "timestamp": "2020-05-26T17:29:24Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/17/commits/36d56e0b2369d06c06499675b6d2ec5629fd45d6"
+        },
+        "date": 1598354818591,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 65.10889113057864,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00043724581181345235",
+            "extra": "mean: 15.358885440000163 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 50.032734291655956,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00025632159350551774",
+            "extra": "mean: 19.98691484999995 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 131.65635167150552,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00021644165944430949",
+            "extra": "mean: 7.595531755999815 msec\nrounds: 100"
+          },
+          {
+            "name": "benchmark.py::test_pairing_py_ecc_no_final_exp",
+            "value": 8.688568237656396,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011246195915695578",
+            "extra": "mean: 115.09376144000157 msec\nrounds: 5"
+          },
+          {
+            "name": "benchmark.py::test_pairing_binding_no_final_exp",
+            "value": 311.0154658380726,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010420872548925204",
+            "extra": "mean: 3.215274190000059 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_pairing_py_ecc",
+            "value": 1.15426662419638,
+            "unit": "iter/sec",
+            "range": "stddev: 0.016388466386646153",
+            "extra": "mean: 866.3509617599983 msec\nrounds: 5"
+          },
+          {
+            "name": "benchmark.py::test_pairing_binding",
+            "value": 222.41080582722083,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00013086371359440725",
+            "extra": "mean: 4.49618442000002 msec\nrounds: 10"
           }
         ]
       }
