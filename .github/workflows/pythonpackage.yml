@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
 
       - name: Install latest nightly
         uses: actions-rs/toolchain@v1
@@ -31,7 +33,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all-targets --all-features
+          args: --all-features
 
   build:
     runs-on: ${{ matrix.os }}
@@ -44,6 +46,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
       - name: rust-toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -72,6 +76,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
       - name: rust-toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -109,6 +115,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
 
       - uses: actions/setup-python@v1
         with:
