@@ -22,5 +22,6 @@ name = "milagro_bls_binding"
 crate-type = ["cdylib"]
 
 [dependencies]
+amcl = { path = "incubator-milagro-crypto-rust" , default-features = false, features = ["bls381"]}
 pyo3 = { version = "0.10.1", features = ["extension-module"] }
 milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag= "v1.1.0" }
