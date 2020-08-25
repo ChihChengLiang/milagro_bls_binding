@@ -7,7 +7,10 @@ from py_ecc.optimized_bls12_381 import (
     G1,
     G2,
     multiply,
+    neg,
+    curve_order,
 )
+from py_ecc.fields import optimized_bls12_381_FQ12 as FQ12
 from py_ecc.bls.g2_primatives import (
     G1_to_pubkey,
     G2_to_signature,
@@ -23,18 +26,56 @@ def bytes_range(l):
     return [to_bytes(i) for i in l]
 
 
-def test_run_pairing():
-    a = multiply(G2, 123)
-    b = multiply(G1, 456)
-    pairing(a, b)
+def test_pairing_negative_G1():
+    p1 = pairing(G2, G1)
+    pn1 = pairing(G2, neg(G1))
+    print(p1 * pn1)
+
+    assert p1 * pn1 == FQ12.one()
 
 
-@pytest.mark.xfail(reason="Haven't figure out how Fq12 could match yet")
-def test_pairing():
-    a = multiply(G2, 123)
-    b = multiply(G1, 456)
-    assert pairing(a, b, False) == py_ecc_pairing(a, b, False)
-    assert pairing(a, b) == py_ecc_pairing(a, b)
+def test_pairing_negative_G2():
+    p1 = pairing(G2, G1)
+    pn1 = pairing(G2, neg(G1))
+    np1 = pairing(neg(G2), G1)
+
+    assert p1 * np1 == FQ12.one()
+    assert pn1 == np1
+
+
+def test_pairing_output_order():
+    p1 = pairing(G2, G1)
+
+    assert p1 ** curve_order == FQ12.one()
+
+
+def test_pairing_bilinearity_on_G1():
+    p1 = pairing(G2, G1)
+    p2 = pairing(G2, multiply(G1, 2))
+    np1 = pairing(neg(G2), G1)
+
+    assert p1 * p1 == p2
+
+
+def test_pairing_is_non_degenerate():
+    p1 = pairing(G2, G1)
+    p2 = pairing(G2, multiply(G1, 2))
+    np1 = pairing(neg(G2), G1)
+
+    assert p1 != p2 and p1 != np1 and p2 != np1
+
+
+def test_pairing_bilinearity_on_G2():
+    p1 = pairing(G2, G1)
+    po2 = pairing(multiply(G2, 2), G1)
+
+    assert p1 * p1 == po2
+
+
+def test_pairing_composit_check():
+    p3 = pairing(multiply(G2, 27), multiply(G1, 37))
+    po3 = pairing(G2, multiply(G1, 999))
+    assert p3 == po3
 
 
 @pytest.mark.parametrize(
