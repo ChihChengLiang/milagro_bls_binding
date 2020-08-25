@@ -3,6 +3,7 @@ import milagro_bls_binding as bls
 import pytest
 
 from py_ecc.optimized_bls12_381 import (
+    pairing as py_ecc_pairing,
     G1,
     G2,
     multiply,
@@ -11,7 +12,6 @@ from py_ecc.bls.g2_primatives import (
     G1_to_pubkey,
     G2_to_signature,
 )
-from py_ecc.optimized_bls12_381 import pairing as py_ecc_pairing
 
 
 def to_bytes(i):

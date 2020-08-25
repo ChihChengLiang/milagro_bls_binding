@@ -2,6 +2,12 @@ import pytest
 import milagro_bls_binding as bls
 import os
 import time
+from py_ecc.optimized_bls12_381 import (
+    pairing as py_ecc_pairing,
+    G1,
+    G2,
+    multiply,
+)
 
 VALIDATORS = 128
 
@@ -74,3 +80,39 @@ def test_single_verify(benchmark, pubkeys, privkeys, messages):
     result = benchmark.pedantic(
         verify_single_sig, args=args, rounds=100, iterations=10)
     assert result == True
+
+
+def test_pairing_py_ecc_no_final_exp():
+    a = multiply(G2, 123)
+    b = multiply(G1, 456)
+    args = (a, b, False)
+    result = benchmark.pedantic(
+        py_ecc_pairing, args=args, rounds=100, iterations=10
+    )
+
+
+def test_pairing_binding_no_final_exp():
+    a = multiply(G2, 123)
+    b = multiply(G1, 456)
+    args = (a, b, False)
+    result = benchmark.pedantic(
+        bls.pairing, args=args, rounds=100, iterations=10
+    )
+
+
+def test_pairing_py_ecc():
+    a = multiply(G2, 123)
+    b = multiply(G1, 456)
+    args = (a, b, True)
+    result = benchmark.pedantic(
+        py_ecc_pairing, args=args, rounds=100, iterations=10
+    )
+
+
+def test_pairing_binding():
+    a = multiply(G2, 123)
+    b = multiply(G1, 456)
+    args = (a, b, True)
+    result = benchmark.pedantic(
+        bls.pairing, args=args, rounds=100, iterations=10
+    )
