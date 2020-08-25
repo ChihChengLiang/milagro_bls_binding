@@ -1,5 +1,5 @@
 import milagro_bls_binding as bls
-
+from helpers import pairing
 import pytest
 
 from py_ecc.optimized_bls12_381 import (
@@ -23,12 +23,18 @@ def bytes_range(l):
     return [to_bytes(i) for i in l]
 
 
+def test_run_pairing():
+    a = multiply(G2, 123)
+    b = multiply(G1, 456)
+    pairing(a, b)
+
+
 @pytest.mark.xfail(reason="Haven't figure out how Fq12 could match yet")
 def test_pairing():
     a = multiply(G2, 123)
     b = multiply(G1, 456)
-    assert bls.pairing(a, b, False) == py_ecc_pairing(a, b, False)
-    assert bls.pairing(a, b) == py_ecc_pairing(a, b)
+    assert pairing(a, b, False) == py_ecc_pairing(a, b, False)
+    assert pairing(a, b) == py_ecc_pairing(a, b)
 
 
 @pytest.mark.parametrize(
