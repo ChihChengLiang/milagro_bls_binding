@@ -49,9 +49,6 @@ def test_aggregate_verify(SKs, messages, success):
         (735),
         (127409812145),
         (90768492698215092512159),
-        # secret key is allowed to be 0 now
-        # https://tools.ietf.org/html/draft-irtf-cfrg-bls-signature-02#section-2.4
-        (0),
     ]
 )
 def test_sign_verify(privkey_int):
@@ -60,6 +57,14 @@ def test_sign_verify(privkey_int):
     pub = bls.SkToPk(privkey)
     sig = bls.Sign(privkey, msg)
     assert bls.Verify(pub, msg, sig)
+
+
+def test_sign_verify_zero():
+    privkey = to_bytes(0)
+    msg = "foooooo".encode('utf-8')
+    pub = bls.SkToPk(privkey)
+    sig = bls.Sign(privkey, msg)
+    assert not bls.Verify(pub, msg, sig)
 
 
 @pytest.mark.parametrize(
