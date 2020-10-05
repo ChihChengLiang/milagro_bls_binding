@@ -98,6 +98,6 @@ def test_weird_cases():
     Z2_SIGNATURE = b'\xc0' + b'\x00' * 95
     assert not bls.AggregateVerify([], [], Z2_SIGNATURE)
     assert bls.Aggregate([]) == Z2_SIGNATURE
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError , match=r"Zero*"):
         bls.Sign(to_bytes(0), b'abcd')
     assert not bls.FastAggregateVerify([Z1_PUBKEY], b'abcd', Z2_SIGNATURE)

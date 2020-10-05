@@ -7,6 +7,16 @@ use pyo3::wrap_pyfunction;
 
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
+fn is_zilch(w: &[u8]) -> bool {
+    for i in 0..32 {
+        if w[i] != 0 {
+            return false;
+        }
+    }
+    true
+}
+
+
 #[pyfunction]
 fn SkToPk(_py: Python, SK: &PyBytes) -> PyResult<PyObject> {
     let sk_bytes: Vec<u8> = SK.extract()?;
@@ -19,6 +29,9 @@ fn SkToPk(_py: Python, SK: &PyBytes) -> PyResult<PyObject> {
 #[pyfunction]
 fn Sign(_py: Python, SK: &PyBytes, message: &PyBytes) -> PyResult<PyObject> {
     let sk_bytes: Vec<u8> = SK.extract()?;
+    if is_zilch(&sk_bytes) {
+        return Err(PyErr::new::<ValueError, _>("Zero key"));
+    }
     let msg_bytes: Vec<u8> = message.extract()?;
     let sk = SecretKey::from_bytes(&sk_bytes)
         .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad key: {:?}", e)))?;
@@ -104,7 +117,13 @@ fn FastAggregateVerify(
             Err(_) => return false,
         };
         match PublicKey::from_bytes(pubkey_bytes) {
-            Ok(_pk) => pks.push(_pk),
+            Ok(_pk) => {
+                if _pk.key_validate() {
+                    pks.push(_pk);
+                } else {
+                    return false;
+                }
+            },
             Err(_) => return false,
         };
     }
