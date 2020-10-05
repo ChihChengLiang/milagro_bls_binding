@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1601614135572,
+  "lastUpdate": 1601921451605,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -921,6 +921,47 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00012277713896662474",
             "extra": "mean: 8.264179488999872 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "b4a86e57d86f762b85d7beb48f3da5aca104d2a4",
+          "message": "Fix more bls v4 issue",
+          "timestamp": "2020-10-02T04:38:43Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/20/commits/b4a86e57d86f762b85d7beb48f3da5aca104d2a4"
+        },
+        "date": 1601921450334,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 61.577529392514904,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008651963669016046",
+            "extra": "mean: 16.23969018999901 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 55.40736388200644,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000743610219789255",
+            "extra": "mean: 18.04814252000085 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 150.53305665627212,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0003733404897219824",
+            "extra": "mean: 6.643059153999673 msec\nrounds: 100"
           }
         ]
       }
