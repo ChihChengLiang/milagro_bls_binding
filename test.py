@@ -7,7 +7,6 @@ from py_ecc.optimized_bls12_381 import (
     G1,
     G2,
     multiply,
-    Z1
 )
 from py_ecc.bls.g2_primatives import (
     G1_to_pubkey,
@@ -95,8 +94,10 @@ def test_fast_aggregate_verify(SKs, message):
 
 
 def test_weird_cases():
-    bad_signature = b'\xc0' + b'\x00' * 95
-    assert not bls.AggregateVerify([], [], bad_signature)
-    assert bls.Aggregate([]) == bad_signature
-    bls.Sign(to_bytes(0), b'abcd')
-    assert bls.FastAggregateVerify([G1_to_pubkey(Z1)], b'abcd', bad_signature)
+    Z1_PUBKEY = b'\xc0' + b'\x00' * 47
+    Z2_SIGNATURE = b'\xc0' + b'\x00' * 95
+    assert not bls.AggregateVerify([], [], Z2_SIGNATURE)
+    assert bls.Aggregate([]) == Z2_SIGNATURE
+    with pytest.raises(ValueError):
+        bls.Sign(to_bytes(0), b'abcd')
+    assert not bls.FastAggregateVerify([Z1_PUBKEY], b'abcd', Z2_SIGNATURE)
