@@ -98,5 +98,6 @@ def test_weird_cases():
     bad_signature = b'\xc0' + b'\x00' * 95
     assert not bls.AggregateVerify([], [], bad_signature)
     assert bls.Aggregate([]) == bad_signature
-    bls.Sign(to_bytes(0), b'abcd')
-    assert bls.FastAggregateVerify([G1_to_pubkey(Z1)], b'abcd', bad_signature)
+    with pytest.raises(ValueError):
+        bls.Sign(to_bytes(0), b'abcd')
+    assert not bls.FastAggregateVerify([G1_to_pubkey(Z1)], b'abcd', bad_signature)
