@@ -59,14 +59,6 @@ def test_sign_verify(privkey_int):
     assert bls.Verify(pub, msg, sig)
 
 
-def test_sign_verify_zero():
-    privkey = to_bytes(0)
-    msg = "foooooo".encode('utf-8')
-    pub = bls.SkToPk(privkey)
-    sig = bls.Sign(privkey, msg)
-    assert not bls.Verify(pub, msg, sig)
-
-
 @pytest.mark.parametrize(
     'signature_points,result_point',
     [
@@ -94,6 +86,11 @@ def test_fast_aggregate_verify(SKs, message):
 
 
 def test_weird_cases():
-    bad_signature = b'\x00' * 96
-    assert not bls.AggregateVerify([], [], bad_signature)
-    assert bls.Aggregate([]) == b'\xc0' + b'\x00' * 95
+    Z1_PUBKEY = b'\xc0' + b'\x00' * 47
+    Z2_SIGNATURE = b'\xc0' + b'\x00' * 95
+    assert not bls.AggregateVerify([], [], Z2_SIGNATURE)
+    assert bls.Aggregate([]) == Z2_SIGNATURE
+    with pytest.raises(ValueError):
+        bls.Sign(to_bytes(0), b'abcd')
+    assert not bls.Verify(Z1_PUBKEY, b'abcd', Z2_SIGNATURE)
+    assert not bls.FastAggregateVerify([Z1_PUBKEY], b'abcd', Z2_SIGNATURE)
