@@ -2,7 +2,7 @@ name: Python package
 
 on:
   release:
-    types: [created]
+    types: [published]
   push:
     branches: [master]
   pull_request:
@@ -137,7 +137,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PyPi publish
-        if: github.event_name == 'release' && github.event.action == 'created'
+        if: github.event_name == 'release' && github.event.action == 'published'
         env:
           MATURIN_PASSWORD: ${{ secrets.PYPI }}
         run: maturin publish --no-sdist --username __token__ --interpreter python
