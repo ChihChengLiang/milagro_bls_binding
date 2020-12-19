@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1608396387786,
+  "lastUpdate": 1608399910123,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1425,6 +1425,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000006914268766094282",
             "extra": "mean: 6.317558030000271 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e3238c976deeca7c5bb71c3293a0b504d9724d69",
+          "message": "Merge pull request #26 from ChihChengLiang/support-3.9-and-windows\n\nSupport 3.9 and windows",
+          "timestamp": "2020-12-20T01:41:52+08:00",
+          "tree_id": "4ecddef20933a5106158090a668262326723f49e",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/e3238c976deeca7c5bb71c3293a0b504d9724d69"
+        },
+        "date": 1608399909565,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 23.046529379571165,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000027820935051095757",
+            "extra": "mean: 43.39048121000019 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 21.845927504532273,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000004880464859345606",
+            "extra": "mean: 45.77512214999956 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 157.9872976667583,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000036220453332844065",
+            "extra": "mean: 6.329622790999906 msec\nrounds: 100"
           }
         ]
       }
