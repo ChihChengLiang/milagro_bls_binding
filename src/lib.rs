@@ -82,12 +82,7 @@ fn _AggregatePKs(_py: Python, PKs: &PyList) -> PyResult<PyObject> {
 }
 
 #[pyfunction]
-fn FastAggregateVerify(
-    _py: Python,
-    PKs: &PyList,
-    message: &PyBytes,
-    signature: &PyBytes,
-) -> bool {
+fn FastAggregateVerify(_py: Python, PKs: &PyList, message: &PyBytes, signature: &PyBytes) -> bool {
     let msg_bytes: Vec<u8> = match message.extract() {
         Ok(bytes) => bytes,
         Err(_) => return false,
@@ -103,7 +98,7 @@ fn FastAggregateVerify(
     let mut pks: Vec<PublicKey> = vec![];
 
     for pk in PKs {
-        let pubkey_bytes = match pk.extract(){
+        let pubkey_bytes = match pk.extract() {
             Ok(bytes) => bytes,
             Err(_) => return false,
         };
@@ -131,7 +126,7 @@ fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: &PyB
 
     let mut pks: Vec<PublicKey> = vec![];
     for pk in PKs {
-        let pubkey_bytes = match pk.extract(){
+        let pubkey_bytes = match pk.extract() {
             Ok(bytes) => bytes,
             Err(_) => return false,
         };
