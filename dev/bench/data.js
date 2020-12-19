@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1608371186568,
+  "lastUpdate": 1608391967214,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1257,6 +1257,47 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00000318039711817421",
             "extra": "mean: 6.346676808000126 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "6f5a4ce90167dd3182d91185e5f4fab07724da46",
+          "message": "Upgrade upstram to 1.4.1",
+          "timestamp": "2020-12-18T19:31:07Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/24/commits/6f5a4ce90167dd3182d91185e5f4fab07724da46"
+        },
+        "date": 1608391966633,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 20.93254302944166,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002699677287275672",
+            "extra": "mean: 47.772504209999624 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 19.535806894843965,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0025652264909710814",
+            "extra": "mean: 51.188057160000255 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 143.84449289481356,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00046400739217155305",
+            "extra": "mean: 6.951951930000206 msec\nrounds: 100"
           }
         ]
       }
