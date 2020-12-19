@@ -11,7 +11,7 @@ use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, 
 fn SkToPk(_py: Python, SK: &PyBytes) -> PyResult<PyObject> {
     let sk_bytes: Vec<u8> = SK.extract()?;
     let sk = SecretKey::from_bytes(&sk_bytes)
-        .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad key: {:?}", e)))?;
+        .map_err(|e| ValueError::py_err(format!("Bad key: {:?}", e)))?;
     let pk = PublicKey::from_secret_key(&sk).as_bytes();
     Ok(PyBytes::new(_py, &pk).to_object(_py))
 }
@@ -21,7 +21,7 @@ fn Sign(_py: Python, SK: &PyBytes, message: &PyBytes) -> PyResult<PyObject> {
     let sk_bytes: Vec<u8> = SK.extract()?;
     let msg_bytes: Vec<u8> = message.extract()?;
     let sk = SecretKey::from_bytes(&sk_bytes)
-        .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad key: {:?}", e)))?;
+        .map_err(|e| ValueError::py_err(format!("Bad key: {:?}", e)))?;
     let sig = Signature::new(&msg_bytes, &sk).as_bytes();
     Ok(PyBytes::new(_py, &sig).to_object(_py))
 }
@@ -57,7 +57,7 @@ fn Aggregate(_py: Python, signatures: &PyList) -> PyResult<PyObject> {
     for sig in signatures {
         let sig_bytes: Vec<u8> = sig.extract()?;
         let sig = Signature::from_bytes(&sig_bytes)
-            .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad Signature: {:?}", e)))?;
+            .map_err(|e| ValueError::py_err(format!("Bad Signature: {:?}", e)))?;
         agg_sig.add(&sig);
     }
     Ok(PyBytes::new(_py, agg_sig.as_bytes().as_ref()).to_object(_py))
@@ -69,11 +69,11 @@ fn _AggregatePKs(_py: Python, PKs: &PyList) -> PyResult<PyObject> {
     for pubkey in PKs {
         let pubkey_bytes = pubkey.extract()?;
         let pk = PublicKey::from_bytes(pubkey_bytes)
-            .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad Public Key: {:?}", e)))?;
+            .map_err(|e| ValueError::py_err(format!("Bad Public Key: {:?}", e)))?;
         pks.push(pk);
     }
     let aggregation = AggregatePublicKey::into_aggregate(&pks)
-        .map_err(|e| PyErr::new::<ValueError, _>(format!("Aggregation fail: {:?}", e)))?;
+        .map_err(|e| ValueError::py_err(format!("Aggregation error: {:?}", e)))?;
     let agg_pub = PublicKey {
         point: aggregation.point,
     }
