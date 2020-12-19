@@ -72,8 +72,12 @@ fn _AggregatePKs(_py: Python, PKs: &PyList) -> PyResult<PyObject> {
             .map_err(|e| PyErr::new::<ValueError, _>(format!("Bad Public Key: {:?}", e)))?;
         pks.push(pk);
     }
-    let pks_ref: Vec<&PublicKey> = pks.iter().collect();
-    let agg_pub = AggregatePublicKey::aggregate(&pks_ref).as_bytes();
+    let aggregation = AggregatePublicKey::into_aggregate(&pks)
+        .map_err(|e| PyErr::new::<ValueError, _>(format!("Aggregation fail: {:?}", e)))?;
+    let agg_pub = PublicKey {
+        point: aggregation.point,
+    }
+    .as_bytes();
     Ok(PyBytes::new(_py, &agg_pub).to_object(_py))
 }
 
