@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1608391967214,
+  "lastUpdate": 1608394617831,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1298,6 +1298,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00046400739217155305",
             "extra": "mean: 6.951951930000206 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8d70f351e493383ce1c028b3bb8537f44c23b19f",
+          "message": "Merge pull request #24 from ChihChengLiang/ugrade-upstram-to-1.4.1\n\nUpgrade upstram to 1.4.1",
+          "timestamp": "2020-12-20T00:09:09+08:00",
+          "tree_id": "3b72b6301fb30ce1db6a45677b182b4696293b2c",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/8d70f351e493383ce1c028b3bb8537f44c23b19f"
+        },
+        "date": 1608394617277,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 17.50370280461892,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007679427997727449",
+            "extra": "mean: 57.13076890999986 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 16.404447659612018,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000830650333734532",
+            "extra": "mean: 60.95907772999964 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 120.88847093414262,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00025793365403296875",
+            "extra": "mean: 8.272087422999817 msec\nrounds: 100"
           }
         ]
       }
