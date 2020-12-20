@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1608478218245,
+  "lastUpdate": 1608478491996,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1597,6 +1597,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000004021737871997244",
             "extra": "mean: 6.313709152000115 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b7e057b7a0c8752239dac8aa8c83db4b65d2a359",
+          "message": "Merge pull request #28 from ChihChengLiang/bumpv1.6.1\n\nbump 1.6.1",
+          "timestamp": "2020-12-20T23:30:50+08:00",
+          "tree_id": "0abbe6770809db7d4e19e857ea25fcca7108b582",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/b7e057b7a0c8752239dac8aa8c83db4b65d2a359"
+        },
+        "date": 1608478491449,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 16.935892576668504,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007594914095334829",
+            "extra": "mean: 59.046194080000014 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 16.03210570763514,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008202411363363777",
+            "extra": "mean: 62.37483822999991 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 116.9179921308234,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00025977050115277557",
+            "extra": "mean: 8.553003534999704 msec\nrounds: 100"
           }
         ]
       }
