@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1608479259217,
+  "lastUpdate": 1608480121438,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1683,6 +1683,47 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00025733799039241105",
             "extra": "mean: 8.571595075999994 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "aa7d7c9671a7daae031c5e5a26d49eb7c06a51eb",
+          "message": "fix release script",
+          "timestamp": "2020-12-20T15:30:53Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/29/commits/aa7d7c9671a7daae031c5e5a26d49eb7c06a51eb"
+        },
+        "date": 1608480120745,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 19.361785109840085,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017506684950419074",
+            "extra": "mean: 51.64813028999987 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 18.302398867984337,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010886960671723367",
+            "extra": "mean: 54.637646529999984 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 133.02264603145997,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005534209053514701",
+            "extra": "mean: 7.517516978000117 msec\nrounds: 100"
           }
         ]
       }
