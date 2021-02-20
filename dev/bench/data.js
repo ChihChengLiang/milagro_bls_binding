@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1608480404030,
+  "lastUpdate": 1613808126019,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1769,6 +1769,47 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0003708701688855232",
             "extra": "mean: 7.9533869959998365 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "09522c7f36050f2199fdda41494d7aaa2ceab4eb",
+          "message": "bump pyo3 maturin for apple m1 support",
+          "timestamp": "2020-12-20T16:02:37Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/31/commits/09522c7f36050f2199fdda41494d7aaa2ceab4eb"
+        },
+        "date": 1613808125522,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 19.16458728067853,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00002759258747491012",
+            "extra": "mean: 52.17957399000113 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 18.16280728041455,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000028349491241970563",
+            "extra": "mean: 55.057568170000195 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 132.17948345931177,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000019311924508862347",
+            "extra": "mean: 7.56547063000005 msec\nrounds: 100"
           }
         ]
       }
