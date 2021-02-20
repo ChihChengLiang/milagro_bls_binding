@@ -15,7 +15,7 @@ classifier = [
 maintainer = "Chih-Cheng Liang"
 maintainer-email = "chihchengliang@gmail.com"
 requires-python = ">=3.6"
-project-url = ["https://github.com/ChihChengLiang/milagro_bls_binding/"]
+project-url = { Source = "https://github.com/ChihChengLiang/milagro_bls_binding/" }
 
 [lib]
 name = "milagro_bls_binding"
