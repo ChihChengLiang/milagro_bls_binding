@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1613825836020,
+  "lastUpdate": 1613826130747,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1851,6 +1851,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00003886334405211054",
             "extra": "mean: 7.554813679000063 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cb5f19633546dd08b67b59771d230cb2d2c9bdc3",
+          "message": "Merge pull request #31 from ChihChengLiang/apple-m1-support\n\nbump pyo3 maturin for apple m1 support",
+          "timestamp": "2021-02-20T20:58:16+08:00",
+          "tree_id": "d7b82f8500811b219cae7d1292fed04e29ded620",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/cb5f19633546dd08b67b59771d230cb2d2c9bdc3"
+        },
+        "date": 1613826130281,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 20.07448410485438,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011934135499046818",
+            "extra": "mean: 49.81448064999995 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 18.870208076268554,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0013122835794833958",
+            "extra": "mean: 52.993586290000394 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 137.74162893263008,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00028808115978074265",
+            "extra": "mean: 7.259969319000163 msec\nrounds: 100"
           }
         ]
       }
