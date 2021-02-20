@@ -1,6 +1,6 @@
 [package]
 name = "milagro-bls-binding"
-version = "1.6.2"
+version = "1.6.3"
 edition = "2018"
 authors = ["chihchengliang@gmail.com"]
 
@@ -15,12 +15,12 @@ classifier = [
 maintainer = "Chih-Cheng Liang"
 maintainer-email = "chihchengliang@gmail.com"
 requires-python = ">=3.6"
-project-url = ["https://github.com/ChihChengLiang/milagro_bls_binding/"]
+project-url = { Source = "https://github.com/ChihChengLiang/milagro_bls_binding/" }
 
 [lib]
 name = "milagro_bls_binding"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.10.1", features = ["extension-module"] }
+pyo3 = { version = "0.13.0", features = ["extension-module"] }
 milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag= "v1.4.1" }
