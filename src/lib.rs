@@ -4,7 +4,6 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyList};
 use pyo3::wrap_pyfunction;
-use rand;
 
 use milagro_bls::{AggregatePublicKey, AggregateSignature, PublicKey, SecretKey, Signature};
 
