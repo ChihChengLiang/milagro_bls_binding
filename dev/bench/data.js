@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1628132082148,
+  "lastUpdate": 1628159416512,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1937,6 +1937,47 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000024474494679985507",
             "extra": "mean: 6.013739459000078 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "9086a810bb1253c6f96923d827268b0092355b71",
+          "message": "Verify multiple aggregate signature",
+          "timestamp": "2021-02-20T12:58:19Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/33/commits/9086a810bb1253c6f96923d827268b0092355b71"
+        },
+        "date": 1628159415626,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 24.29181393451288,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005216158273228954",
+            "extra": "mean: 41.16613122000075 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 22.73764295281208,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008683781351333082",
+            "extra": "mean: 43.979932399999484 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 162.29733210930556,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000254771334516212",
+            "extra": "mean: 6.1615307350000705 msec\nrounds: 100"
           }
         ]
       }
