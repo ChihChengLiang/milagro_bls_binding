@@ -150,6 +150,32 @@ fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: &PyB
     agg_sig.aggregate_verify(&msgs_refs, &pks_ref)
 }
 
+#[pyfunction]
+fn VerifyMultipleAggregateSignatures(_py: Python, SignatureSets: &PyList) -> bool {
+    let mut signature_sets: Vec<(AggregateSignature, AggregatePublicKey, Vec<u8>)> = Vec::new();
+    for set in SignatureSets {
+        let tuple: Vec<Vec<u8>> = match set.extract() {
+            Ok(_tuple) => _tuple,
+            Err(_) => return false,
+        };
+        let aggsig = match AggregateSignature::from_bytes(&tuple[0]) {
+            Ok(_aggsig) => _aggsig,
+            Err(_) => return false,
+        };
+        let aggkey = match PublicKey::from_bytes(&tuple[1]) {
+            Ok(_pubkey) => AggregatePublicKey::from_public_key(&_pubkey),
+            Err(_) => return false,
+        };
+        signature_sets.push((aggsig, aggkey, tuple[2].clone()));
+    }
+
+    let mut rng = &mut rand::thread_rng();
+    AggregateSignature::verify_multiple_aggregate_signatures(
+        &mut rng,
+        signature_sets.iter().map(|x| (&x.0, &x.1, x.2.as_slice())),
+    )
+}
+
 /// This module is a python module implemented in Rust.
 #[pymodule]
 fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -161,5 +187,6 @@ fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(_AggregatePKs))?;
     m.add_wrapped(wrap_pyfunction!(FastAggregateVerify))?;
     m.add_wrapped(wrap_pyfunction!(AggregateVerify))?;
+    m.add_wrapped(wrap_pyfunction!(VerifyMultipleAggregateSignatures))?;
     Ok(())
 }

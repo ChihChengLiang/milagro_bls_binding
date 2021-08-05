@@ -84,6 +84,24 @@ def test_fast_aggregate_verify(SKs, message):
     aggregate_signature = bls.Aggregate(signatures)
     assert bls.FastAggregateVerify(PKs, message, aggregate_signature)
 
+@pytest.mark.parametrize(
+    'SKs,messages',
+    [
+        (bytes_range(range(1, 5)), bytes_range(range(55, 66))),
+    ]
+)
+def test_verify_multiple_aggregate_signatures(SKs, messages):
+    signature_set = [
+        (
+            bls.Aggregate( [bls.Sign(sk, msg) for sk in SKs]),
+            bls._AggregatePKs([bls.SkToPk(sk) for sk in SKs]),
+            msg
+        )
+        for msg in messages
+    ]
+    assert bls.VerifyMultipleAggregateSignatures(signature_set)
+    bad_signature_set = [(aggsig, aggkey, msg + b'\xbadd') for aggsig, aggkey, msg in signature_set]
+    assert not bls.VerifyMultipleAggregateSignatures(bad_signature_set)
 
 def test_weird_cases():
     Z1_PUBKEY = b'\xc0' + b'\x00' * 47
