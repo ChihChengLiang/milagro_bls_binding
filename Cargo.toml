@@ -24,3 +24,4 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.13.0", features = ["extension-module"] }
 milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag= "v1.4.2" }
+rand = { version = "0.7.2", default-features = false }
