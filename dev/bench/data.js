@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1628159416512,
+  "lastUpdate": 1628165026020,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -1978,6 +1978,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000254771334516212",
             "extra": "mean: 6.1615307350000705 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0f0b51188c452b444831e642944cea8d1db9ea2f",
+          "message": "Merge pull request #33 from ChihChengLiang/verify_multiple_aggregate_signature\n\nVerify multiple aggregate signature",
+          "timestamp": "2021-08-05T20:00:09+08:00",
+          "tree_id": "e9446b8b25dad3ed516391bd309608b2dbda6097",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/0f0b51188c452b444831e642944cea8d1db9ea2f"
+        },
+        "date": 1628165025586,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 27.82044683169707,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000014689110075280469",
+            "extra": "mean: 35.94478571999986 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 26.3524468715337,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00001830596434232798",
+            "extra": "mean: 37.9471403499997 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 188.3565066795873,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000074892868537884726",
+            "extra": "mean: 5.309081260999903 msec\nrounds: 100"
           }
         ]
       }
