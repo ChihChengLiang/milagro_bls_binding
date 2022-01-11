@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1641928713059,
+  "lastUpdate": 1641928846504,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -2105,6 +2105,47 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000032169998187275605",
             "extra": "mean: 6.079029277999837 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "name": "ChihChengLiang",
+            "username": "ChihChengLiang"
+          },
+          "id": "979bd470c718b109276aa869b8ffe48eba9dff30",
+          "message": "change build and release flow",
+          "timestamp": "2021-08-05T12:00:14Z",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/pull/35/commits/979bd470c718b109276aa869b8ffe48eba9dff30"
+        },
+        "date": 1641928846027,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 24.476856560831756,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005762506136026014",
+            "extra": "mean: 40.85491932000025 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 23.190292021514306,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005208977328556467",
+            "extra": "mean: 43.12149235000021 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 164.31199501869935,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000004316420450007558",
+            "extra": "mean: 6.08598294900014 msec\nrounds: 100"
           }
         ]
       }
