@@ -5,3 +5,6 @@ target/
 *.lock
 .key_cache
 venv/
+
+# Prevent packaging into cargo
+dist/

@@ -1,3 +1,19 @@
+[project]
+name = "milagro-bls-binding"
+
 [build-system]
-requires = ["maturin"]
+requires = ["maturin>=0.12,<0.13"]
 build-backend = "maturin"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.2.5",
+    "pytest-benchmark>=3.2.3",
+    "py-ecc==6.0.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "test.py",
+]

@@ -1,8 +1,9 @@
 [package]
 name = "milagro-bls-binding"
-version = "1.7.0"
+version = "1.8.0"
 edition = "2018"
 authors = ["chihchengliang@gmail.com"]
+readme = "README.md"
 
 [package.metadata.maturin]
 classifier = [
@@ -22,6 +23,6 @@ name = "milagro_bls_binding"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.13.0", features = ["extension-module"] }
+pyo3 = { version = "0.15.1", features = ["extension-module", "abi3-py36"] }
 milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag= "v1.4.2" }
 rand = { version = "0.7.2", default-features = false }
