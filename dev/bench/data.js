@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1641928846504,
+  "lastUpdate": 1641929436963,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -2146,6 +2146,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000004316420450007558",
             "extra": "mean: 6.08598294900014 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d073d1c468efc4331d1c4fcf6b34578c6e053d5e",
+          "message": "Merge pull request #35 from ChihChengLiang/new-compilation-flow\n\nchange build and release flow",
+          "timestamp": "2022-01-12T03:26:17+08:00",
+          "tree_id": "a6c69fa7da86c8dfae69f77ccc029fcc2c3fb7b1",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/d073d1c468efc4331d1c4fcf6b34578c6e053d5e"
+        },
+        "date": 1641929436450,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 19.53307085607903,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000033303366124362106",
+            "extra": "mean: 51.19522717999985 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 18.483887739693866,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00002008500504143712",
+            "extra": "mean: 54.1011725499996 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 131.26824059003866,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000008853269360100744",
+            "extra": "mean: 7.61798890200015 msec\nrounds: 100"
           }
         ]
       }
