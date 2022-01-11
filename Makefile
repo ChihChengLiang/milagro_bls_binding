@@ -1,6 +1,3 @@
-build:
-	maturin develop
-
 install:
 	pip install .
 
