@@ -15,11 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Install latest nightly
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
           default: true
           components: rustfmt, clippy
       - name: Lint with rustfmt
