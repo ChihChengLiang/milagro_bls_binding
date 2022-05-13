@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1652428920074,
+  "lastUpdate": 1652429769786,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -2539,6 +2539,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000007776265140526291",
             "extra": "mean: 6.068907146999948 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "78b40969e9016378097c88b323b5afd7928f7d9d",
+          "message": "Merge pull request #37 from ChihChengLiang/various-update\n\nUse stable rust and support arm",
+          "timestamp": "2022-05-13T09:57:27+02:00",
+          "tree_id": "889b5a5236a0c4eb2e66fc02a682b51fce925bf3",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/78b40969e9016378097c88b323b5afd7928f7d9d"
+        },
+        "date": 1652429768501,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 24.642652205936496,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00003192634925701206",
+            "extra": "mean: 40.58004761999996 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 23.310980217610755,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017065383219580664",
+            "extra": "mean: 42.898238969999625 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 165.7616009216179,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000004383082314692389",
+            "extra": "mean: 6.032760267999947 msec\nrounds: 100"
           }
         ]
       }
