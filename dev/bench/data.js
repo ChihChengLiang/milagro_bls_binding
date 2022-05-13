@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1652483794876,
+  "lastUpdate": 1652484865809,
   "repoUrl": "https://github.com/ChihChengLiang/milagro_bls_binding",
   "entries": {
     "Benchmark": [
@@ -2748,6 +2748,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000005817234651305883",
             "extra": "mean: 6.062086930999953 msec\nrounds: 100"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "chihchengliang@gmail.com",
+            "name": "Chih Cheng Liang",
+            "username": "ChihChengLiang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d7d4cf3bf2ef46b2100bcafb571d503da4c4d39b",
+          "message": "Merge pull request #38 from ChihChengLiang/bump-upstrea\n\nBump upstream and cleanup error handling",
+          "timestamp": "2022-05-14T01:29:42+02:00",
+          "tree_id": "b1c31df099e8896750ab1ceb6966028ce0378a23",
+          "url": "https://github.com/ChihChengLiang/milagro_bls_binding/commit/d7d4cf3bf2ef46b2100bcafb571d503da4c4d39b"
+        },
+        "date": 1652484865065,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "benchmark.py::test_verifying_aggregate_of_128_signatures",
+            "value": 22.096784394706503,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000040093102816871205",
+            "extra": "mean: 45.25545356000123 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_verifying_aggregation_of_128_signatures_with_two_distinct_messages",
+            "value": 20.93591735691623,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000030881163765818524",
+            "extra": "mean: 47.76480452000101 msec\nrounds: 10"
+          },
+          {
+            "name": "benchmark.py::test_single_verify",
+            "value": 152.43333925408803,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005379653675349857",
+            "extra": "mean: 6.560244660999785 msec\nrounds: 100"
           }
         ]
       }
