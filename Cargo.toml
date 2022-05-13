@@ -23,6 +23,6 @@ name = "milagro_bls_binding"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.15.1", features = ["extension-module", "abi3-py36"] }
+pyo3 = { version = "0.16.4", features = ["extension-module", "abi3-py37"] }
 milagro_bls = {git = "https://github.com/sigp/milagro_bls", tag= "v1.5.0" }
 rand = { version = "0.8.5", default-features = false }
