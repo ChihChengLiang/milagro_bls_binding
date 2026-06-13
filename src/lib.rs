@@ -139,6 +139,14 @@ fn VerifyMultipleAggregateSignatures(_py: Python<'_>, SignatureSets: &Bound<'_, 
 /// This module is a python module implemented in Rust.
 #[pymodule]
 fn milagro_bls_binding(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.py().import("warnings")?.call_method1(
+        "warn",
+        (
+            "milagro_bls_binding is deprecated and no longer maintained.",
+            m.py().get_type::<pyo3::exceptions::PyDeprecationWarning>(),
+            2i32,
+        ),
+    )?;
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add_function(wrap_pyfunction!(SkToPk, m)?)?;
     m.add_function(wrap_pyfunction!(Sign, m)?)?;

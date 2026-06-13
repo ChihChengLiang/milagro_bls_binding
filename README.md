@@ -1,5 +1,7 @@
 # BLS12-381 Milagro Rust Binding for Python
 
+> **⚠️ Deprecated — this project is no longer maintained.**
+
 ![Python package](https://github.com/ChihChengLiang/milagro_bls_binding/workflows/Python%20package/badge.svg)
 [![PyPI version](https://badge.fury.io/py/milagro-bls-binding.svg)](https://badge.fury.io/py/milagro-bls-binding)
 

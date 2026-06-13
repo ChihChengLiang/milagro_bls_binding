@@ -7,7 +7,7 @@ readme = "README.md"
 
 [package.metadata.maturin]
 classifier = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 7 - Inactive",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
