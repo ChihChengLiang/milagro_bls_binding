@@ -51,7 +51,8 @@ jobs:
       - name: Build wheels - universal2
         uses: PyO3/maturin-action@v1
         with:
-          args: --release --universal2 --out dist
+          target: universal2-apple-darwin
+          args: --release --out dist
       - name: Install and test universal2 wheel
         run: |
           pip install milagro_bls_binding --no-index --find-links dist --force-reinstall
