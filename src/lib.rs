@@ -21,15 +21,24 @@ fn SkToPk(py: Python<'_>, SK: &Bound<'_, PyBytes>) -> PyResult<Py<PyBytes>> {
 }
 
 #[pyfunction]
-fn Sign(py: Python<'_>, SK: &Bound<'_, PyBytes>, message: &Bound<'_, PyBytes>) -> PyResult<Py<PyBytes>> {
+fn Sign(
+    py: Python<'_>,
+    SK: &Bound<'_, PyBytes>,
+    message: &Bound<'_, PyBytes>,
+) -> PyResult<Py<PyBytes>> {
     SecretKey::from_bytes(SK.as_bytes())
         .map_err(to_py_err)
-        .and_then(|sk| Ok(Signature::new(message.as_bytes(), &sk).as_bytes()))
+        .map(|sk| Signature::new(message.as_bytes(), &sk).as_bytes())
         .map(|sig| PyBytes::new(py, &sig).unbind())
 }
 
 #[pyfunction]
-fn Verify(_py: Python<'_>, PK: &Bound<'_, PyBytes>, message: &Bound<'_, PyBytes>, signature: &Bound<'_, PyBytes>) -> bool {
+fn Verify(
+    _py: Python<'_>,
+    PK: &Bound<'_, PyBytes>,
+    message: &Bound<'_, PyBytes>,
+    signature: &Bound<'_, PyBytes>,
+) -> bool {
     PublicKey::from_bytes(PK.as_bytes())
         .map_err(to_py_err)
         .and_then(|pk| {
@@ -70,7 +79,12 @@ fn _AggregatePKs(py: Python<'_>, PKs: &Bound<'_, PyList>) -> PyResult<Py<PyBytes
 }
 
 #[pyfunction]
-fn FastAggregateVerify(_py: Python<'_>, PKs: &Bound<'_, PyList>, message: &Bound<'_, PyBytes>, signature: &Bound<'_, PyBytes>) -> bool {
+fn FastAggregateVerify(
+    _py: Python<'_>,
+    PKs: &Bound<'_, PyList>,
+    message: &Bound<'_, PyBytes>,
+    signature: &Bound<'_, PyBytes>,
+) -> bool {
     PKs.iter()
         .map(|pubkey| {
             let bytes: Vec<u8> = pubkey.extract()?;
@@ -89,7 +103,12 @@ fn FastAggregateVerify(_py: Python<'_>, PKs: &Bound<'_, PyList>, message: &Bound
 }
 
 #[pyfunction]
-fn AggregateVerify(_py: Python<'_>, PKs: &Bound<'_, PyList>, messages: &Bound<'_, PyList>, signature: &Bound<'_, PyBytes>) -> bool {
+fn AggregateVerify(
+    _py: Python<'_>,
+    PKs: &Bound<'_, PyList>,
+    messages: &Bound<'_, PyList>,
+    signature: &Bound<'_, PyBytes>,
+) -> bool {
     PKs.iter()
         .map(|pubkey| {
             let bytes: Vec<u8> = pubkey.extract()?;
