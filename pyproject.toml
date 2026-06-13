@@ -1,5 +1,20 @@
 [project]
 name = "milagro-bls-binding"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 7 - Inactive",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.8",
+]
+
+[[project.maintainers]]
+name = "Chih-Cheng Liang"
+email = "chihchengliang@gmail.com"
+
+[project.urls]
+Source = "https://github.com/ChihChengLiang/milagro_bls_binding/"
 
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
