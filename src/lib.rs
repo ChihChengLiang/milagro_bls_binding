@@ -3,7 +3,6 @@
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyList};
-use pyo3::wrap_pyfunction;
 
 use milagro_bls::{
     AggregatePublicKey, AggregateSignature, AmclError, PublicKey, SecretKey, Signature,
@@ -14,66 +13,75 @@ fn to_py_err(e: AmclError) -> PyErr {
 }
 
 #[pyfunction]
-fn SkToPk(_py: Python, SK: &PyBytes) -> PyResult<PyObject> {
-    SecretKey::from_bytes(SK.extract()?)
+fn SkToPk(py: Python<'_>, SK: &Bound<'_, PyBytes>) -> PyResult<Py<PyBytes>> {
+    SecretKey::from_bytes(SK.as_bytes())
         .map_err(to_py_err)
         .map(|sk| PublicKey::from_secret_key(&sk).as_bytes())
-        .map(|pk| PyBytes::new(_py, &pk).to_object(_py))
+        .map(|pk| PyBytes::new(py, &pk).unbind())
 }
 
 #[pyfunction]
-fn Sign(_py: Python, SK: &PyBytes, message: &PyBytes) -> PyResult<PyObject> {
-    SecretKey::from_bytes(SK.extract()?)
+fn Sign(py: Python<'_>, SK: &Bound<'_, PyBytes>, message: &Bound<'_, PyBytes>) -> PyResult<Py<PyBytes>> {
+    SecretKey::from_bytes(SK.as_bytes())
         .map_err(to_py_err)
-        .and_then(|sk| Ok(Signature::new(message.extract()?, &sk).as_bytes()))
-        .map(|sig| PyBytes::new(_py, &sig).to_object(_py))
+        .and_then(|sk| Ok(Signature::new(message.as_bytes(), &sk).as_bytes()))
+        .map(|sig| PyBytes::new(py, &sig).unbind())
 }
 
 #[pyfunction]
-fn Verify(_py: Python, PK: &PyBytes, message: &PyBytes, signature: &PyBytes) -> bool {
-    PK.extract()
-        .and_then(|pk| PublicKey::from_bytes(pk).map_err(to_py_err))
+fn Verify(_py: Python<'_>, PK: &Bound<'_, PyBytes>, message: &Bound<'_, PyBytes>, signature: &Bound<'_, PyBytes>) -> bool {
+    PublicKey::from_bytes(PK.as_bytes())
+        .map_err(to_py_err)
         .and_then(|pk| {
-            let sig = Signature::from_bytes(signature.extract()?).map_err(to_py_err)?;
-            Ok(sig.verify(message.extract()?, &pk))
+            let sig = Signature::from_bytes(signature.as_bytes()).map_err(to_py_err)?;
+            Ok(sig.verify(message.as_bytes(), &pk))
         })
         .unwrap_or(false)
 }
 
 #[pyfunction]
-fn Aggregate(_py: Python, signatures: &PyList) -> PyResult<PyObject> {
+fn Aggregate(py: Python<'_>, signatures: &Bound<'_, PyList>) -> PyResult<Py<PyBytes>> {
     let agg_sig = signatures
         .iter()
-        .map(|sig| Signature::from_bytes(sig.extract()?).map_err(to_py_err))
+        .map(|sig| {
+            let bytes: Vec<u8> = sig.extract()?;
+            Signature::from_bytes(&bytes).map_err(to_py_err)
+        })
         .collect::<Result<Vec<Signature>, _>>()?
         .iter()
         .fold(AggregateSignature::new(), |mut agg_sig, sig| {
             agg_sig.add(sig);
             agg_sig
         });
-    Ok(PyBytes::new(_py, agg_sig.as_bytes().as_ref()).to_object(_py))
+    Ok(PyBytes::new(py, agg_sig.as_bytes().as_ref()).unbind())
 }
 
 #[pyfunction]
-fn _AggregatePKs(_py: Python, PKs: &PyList) -> PyResult<PyObject> {
+fn _AggregatePKs(py: Python<'_>, PKs: &Bound<'_, PyList>) -> PyResult<Py<PyBytes>> {
     PKs.iter()
-        .map(|pubkey| PublicKey::from_bytes(pubkey.extract()?).map_err(to_py_err))
+        .map(|pubkey| {
+            let bytes: Vec<u8> = pubkey.extract()?;
+            PublicKey::from_bytes(&bytes).map_err(to_py_err)
+        })
         .collect::<Result<Vec<PublicKey>, PyErr>>()
         .and_then(|pks| AggregatePublicKey::into_aggregate(&pks).map_err(to_py_err))
         .map(|agg| PublicKey { point: agg.point }.as_bytes())
-        .map(|agg_pub| PyBytes::new(_py, &agg_pub).to_object(_py))
+        .map(|agg_pub| PyBytes::new(py, &agg_pub).unbind())
 }
 
 #[pyfunction]
-fn FastAggregateVerify(_py: Python, PKs: &PyList, message: &PyBytes, signature: &PyBytes) -> bool {
+fn FastAggregateVerify(_py: Python<'_>, PKs: &Bound<'_, PyList>, message: &Bound<'_, PyBytes>, signature: &Bound<'_, PyBytes>) -> bool {
     PKs.iter()
-        .map(|pubkey| PublicKey::from_bytes(pubkey.extract()?).map_err(to_py_err))
+        .map(|pubkey| {
+            let bytes: Vec<u8> = pubkey.extract()?;
+            PublicKey::from_bytes(&bytes).map_err(to_py_err)
+        })
         .collect::<Result<Vec<PublicKey>, PyErr>>()
         .and_then(|pks| {
-            Ok(AggregateSignature::from_bytes(signature.extract()?)
+            Ok(AggregateSignature::from_bytes(signature.as_bytes())
                 .map_err(to_py_err)?
                 .fast_aggregate_verify(
-                    message.extract()?,
+                    message.as_bytes(),
                     &pks.iter().collect::<Vec<&PublicKey>>(),
                 ))
         })
@@ -81,16 +89,19 @@ fn FastAggregateVerify(_py: Python, PKs: &PyList, message: &PyBytes, signature: 
 }
 
 #[pyfunction]
-fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: &PyBytes) -> bool {
+fn AggregateVerify(_py: Python<'_>, PKs: &Bound<'_, PyList>, messages: &Bound<'_, PyList>, signature: &Bound<'_, PyBytes>) -> bool {
     PKs.iter()
-        .map(|pubkey| PublicKey::from_bytes(pubkey.extract()?).map_err(to_py_err))
+        .map(|pubkey| {
+            let bytes: Vec<u8> = pubkey.extract()?;
+            PublicKey::from_bytes(&bytes).map_err(to_py_err)
+        })
         .collect::<Result<Vec<PublicKey>, PyErr>>()
         .and_then(|pks| {
             let msgs = messages
                 .iter()
                 .map(|msg| msg.extract())
                 .collect::<Result<Vec<Vec<u8>>, PyErr>>()?;
-            Ok(AggregateSignature::from_bytes(signature.extract()?)
+            Ok(AggregateSignature::from_bytes(signature.as_bytes())
                 .map_err(to_py_err)?
                 .aggregate_verify(
                     &msgs
@@ -104,7 +115,7 @@ fn AggregateVerify(_py: Python, PKs: &PyList, messages: &PyList, signature: &PyB
 }
 
 #[pyfunction]
-fn VerifyMultipleAggregateSignatures(_py: Python, SignatureSets: &PyList) -> bool {
+fn VerifyMultipleAggregateSignatures(_py: Python<'_>, SignatureSets: &Bound<'_, PyList>) -> bool {
     SignatureSets
         .iter()
         .map(|set| {
@@ -127,15 +138,15 @@ fn VerifyMultipleAggregateSignatures(_py: Python, SignatureSets: &PyList) -> boo
 
 /// This module is a python module implemented in Rust.
 #[pymodule]
-fn milagro_bls_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+fn milagro_bls_binding(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
-    m.add_wrapped(wrap_pyfunction!(SkToPk))?;
-    m.add_wrapped(wrap_pyfunction!(Sign))?;
-    m.add_wrapped(wrap_pyfunction!(Verify))?;
-    m.add_wrapped(wrap_pyfunction!(Aggregate))?;
-    m.add_wrapped(wrap_pyfunction!(_AggregatePKs))?;
-    m.add_wrapped(wrap_pyfunction!(FastAggregateVerify))?;
-    m.add_wrapped(wrap_pyfunction!(AggregateVerify))?;
-    m.add_wrapped(wrap_pyfunction!(VerifyMultipleAggregateSignatures))?;
+    m.add_function(wrap_pyfunction!(SkToPk, m)?)?;
+    m.add_function(wrap_pyfunction!(Sign, m)?)?;
+    m.add_function(wrap_pyfunction!(Verify, m)?)?;
+    m.add_function(wrap_pyfunction!(Aggregate, m)?)?;
+    m.add_function(wrap_pyfunction!(_AggregatePKs, m)?)?;
+    m.add_function(wrap_pyfunction!(FastAggregateVerify, m)?)?;
+    m.add_function(wrap_pyfunction!(AggregateVerify, m)?)?;
+    m.add_function(wrap_pyfunction!(VerifyMultipleAggregateSignatures, m)?)?;
     Ok(())
 }
