@@ -33,14 +33,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install .[test]
       - run: pytest
-      - run: pytest benchmark.py --benchmark-json output.json
-      - uses: rhysd/github-action-benchmark@v1
-        with:
-          tool: 'pytest'
-          output-file-path: output.json
-          comment-on-alert: true
-          github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-          auto-push: true
 
   macos:
     runs-on: macos-latest
