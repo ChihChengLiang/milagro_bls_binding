@@ -28,7 +28,7 @@ fn Sign(
 ) -> PyResult<Py<PyBytes>> {
     SecretKey::from_bytes(SK.as_bytes())
         .map_err(to_py_err)
-        .and_then(|sk| Ok(Signature::new(message.as_bytes(), &sk).as_bytes()))
+        .map(|sk| Signature::new(message.as_bytes(), &sk).as_bytes())
         .map(|sig| PyBytes::new(py, &sig).unbind())
 }
 
